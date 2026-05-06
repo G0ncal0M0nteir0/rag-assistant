@@ -1,0 +1,1 @@
+Machine learning is a subset of AI. It uses data to train models. Neural networks are used in deep learning.

@@ -5,6 +5,7 @@ from app import models, schemas
 from app.auth import get_current_user
 import fitz
 import uuid
+from app.services.vectorstore import store_document, delete_document_chunks
 import os
 
 router = APIRouter()
@@ -12,6 +13,7 @@ router = APIRouter()
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+### Extracts PDF, TXT e MD. Falta PPTX e DOCX
 def extract_text(file_path: str, filename: str) -> str:
     ext = filename.lower().split(".")[-1]
     if ext == "pdf":
@@ -59,6 +61,13 @@ def upload_document(
     db.commit()
     db.refresh(doc_record)
 
+    # Store chunks in ChromaDB
+    store_document(
+        doc_id=str(doc_record.id),
+        user_id=str(current_user.id),
+        text=text
+    )
+
     text_path = os.path.join(UPLOAD_DIR, f"{str(doc_record.id)}.txt")
     with open(text_path, "w", encoding="utf-8") as f:
         f.write(text)
@@ -93,6 +102,9 @@ def delete_document(
     ]:
         if os.path.exists(path):
             os.remove(path)
+
+
+    delete_document_chunks(document_id)
 
     db.delete(doc)
     db.commit()
