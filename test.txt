@@ -3,7 +3,6 @@ Machine learning is a subset of AI. It uses data to train models. Neural network
 curl -X POST http://localhost:8000/auth/login \
   -d "username=test@example.com&password=secret123"
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ
 
 curl -X POST http://localhost:8000/documents/upload \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ" \

@@ -30,3 +30,15 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     sources: list[str] = []
+
+class ChatMessageOut(BaseModel):
+    id: UUID
+    question: str
+    answer: str
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class ChatHistoryResponse(BaseModel):
+    messages: list[ChatMessageOut]
+    total: int
