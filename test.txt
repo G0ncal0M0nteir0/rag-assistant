@@ -1,1 +1,8 @@
 Machine learning is a subset of AI. It uses data to train models. Neural networks are used in deep learning.
+curl -X POST http://localhost:8000/chat/ask \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is machine learning?"}'
+
+curl -X POST http://localhost:8000/auth/login \
+  -d "username=test@example.com&password=secret123"
