@@ -1,0 +1,10 @@
+Artificial Intelligence is the simulation of human intelligence by machines.
+Machine learning is a subset of AI that enables systems to learn from data.
+Deep learning uses neural networks with many layers to process complex patterns.
+Natural Language Processing (NLP) allows computers to understand human language.
+RAG stands for Retrieval-Augmented Generation. It combines search with language models.
+Vector databases store embeddings which are numerical representations of text.
+ChromaDB is an open source vector database used for storing and searching embeddings.
+Transformers are a type of neural network architecture used in modern NLP models.
+BERT is a transformer model trained on large amounts of text data.
+Sentence transformers convert sentences into dense vector representations.

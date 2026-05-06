@@ -1,8 +1,49 @@
 Machine learning is a subset of AI. It uses data to train models. Neural networks are used in deep learning.
-curl -X POST http://localhost:8000/chat/ask \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is machine learning?"}'
 
 curl -X POST http://localhost:8000/auth/login \
   -d "username=test@example.com&password=secret123"
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ
+
+curl -X POST http://localhost:8000/documents/upload \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ" \
+  -F "file=@test_rag.txt"
+
+
+Q1
+
+curl -X POST http://localhost:8000/chat/ask \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is RAG and how does it work?"}'
+
+Q2
+
+curl -X POST http://localhost:8000/chat/ask \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is ChromaDB used for?"}'
+
+Q3
+
+curl -X POST http://localhost:8000/chat/ask \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWVlZWE2NS03Y2Y5LTQ4MTAtYjE0Mi0yYzdjMjVhOTY3NWEiLCJleHAiOjE3NzgwOTg0ODJ9.ZX1X-VoDuyNib3JoUvmmmcfYg9XK9AKDXytWAQlrUcQ" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is the capital of France?"}'
+
+-------------------------------------------------
+
+curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user2@example.com", "password": "password456"}'
+
+curl -X POST http://localhost:8000/auth/login \
+  -d "username=user2@example.com&password=password456"
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZTIzNTY2ZS0yNjgzLTQ4ZmQtYTE1Yy0yZTRiMDg3YTNiZTciLCJleHAiOjE3NzgwOTg2NzR9.yu6bcvaShGGqxZ-m_rzNw6zll-ISb_iOER1jLJQeNgM
+
+curl -X POST http://localhost:8000/chat/ask \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZTIzNTY2ZS0yNjgzLTQ4ZmQtYTE1Yy0yZTRiMDg3YTNiZTciLCJleHAiOjE3NzgwOTg2NzR9.yu6bcvaShGGqxZ-m_rzNw6zll-ISb_iOER1jLJQeNgM" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is RAG?"}'
