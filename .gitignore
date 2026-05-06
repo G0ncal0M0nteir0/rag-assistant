@@ -1,0 +1,25 @@
+# Python
+venv/
+_pycache_/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment variables — NEVER commit this
+.env
+
+# ChromaDB local data
+chroma_db/
+
+# Uploads folder
+uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
