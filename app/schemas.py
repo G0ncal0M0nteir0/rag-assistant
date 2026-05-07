@@ -20,6 +20,8 @@ class Token(BaseModel):
 class DocumentOut(BaseModel):
     id: UUID
     filename: str
+    status: str
+    chunk_count: int
     created_at: datetime
     class Config:
         from_attributes = True

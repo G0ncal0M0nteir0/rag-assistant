@@ -120,11 +120,20 @@ def upload_document(
     with open(text_path, "w", encoding="utf-8") as f:
         f.write(text)
 
-    store_document(
-        doc_id=str(doc_record.id),
-        user_id=str(current_user.id),
-        text=text
-    )
+    try:
+        chunk_count = store_document(
+            doc_id=str(doc_record.id),
+            user_id=str(current_user.id),
+            text=text
+        )
+        doc_record.status = "ready"
+        doc_record.chunk_count = chunk_count
+    except Exception as e:
+        doc_record.status = "failed"
+        doc_record.chunk_count = 0
+
+    db.commit()
+    db.refresh(doc_record)
 
     return doc_record
 
