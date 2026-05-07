@@ -7,6 +7,7 @@ from app.auth import hash_password, verify_password, create_access_token
 from app.services.email import send_verification_email
 import uuid
 import secrets
+import os
 
 router = APIRouter()
 
@@ -107,3 +108,19 @@ async def resend_verification(
     )
 
     return {"message": "Verification email resent."}
+
+
+# Dev purposes only !!! DISABLE after !!!
+@router.post("/dev-verify")
+def dev_verify(email: str, db: Session = Depends(get_db)):
+    if os.getenv("ENVIRONMENT", "development") != "development":
+        raise HTTPException(status_code=404, detail="Not found.")
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    user.is_verified = "true"
+    user.verification_token = None
+    db.commit()
+    return {"message": f"{email} verified successfully."}
