@@ -10,6 +10,7 @@ class UserCreate(BaseModel):
 class UserOut(BaseModel):
     id: UUID
     email: str
+    is_verified: str
     created_at: datetime
     class Config:
         from_attributes = True
