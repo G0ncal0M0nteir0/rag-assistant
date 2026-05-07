@@ -6,13 +6,27 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+GROQ_LIMITS = {
+    "llama-3.3-70b-versatile": {
+        "requests_per_minute": 30,
+        "requests_per_day": 1000,
+        "tokens_per_minute": 12000,
+        "tokens_per_day": 100000,
+    }
+}
+
 def generate_answer(
     question: str,
     context_chunks: list[str],
     history: list[dict] = []
-) -> str:
+) -> dict:
     if not context_chunks:
-        return "I couldn't find any relevant information in your documents to answer that question."
+        return {
+            "answer": "I couldn't find any relevant information in your documents to answer that question.",
+            "prompt_tokens": 0,
+            "answer_tokens": 0,
+            "total_tokens": 0
+        }
 
     context = "\n\n".join(context_chunks)
 
@@ -38,4 +52,14 @@ Context:
         max_tokens=1000
     )
 
-    return response.choices[0].message.content
+    usage = response.usage
+
+    return {
+        "answer": response.choices[0].message.content,
+        "prompt_tokens": usage.prompt_tokens,
+        "answer_tokens": usage.completion_tokens,
+        "total_tokens": usage.total_tokens
+    }
+
+def get_groq_limits() -> dict:
+    return GROQ_LIMITS["llama-3.3-70b-versatile"]
