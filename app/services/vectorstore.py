@@ -34,7 +34,7 @@ def store_document(doc_id: str, user_id: str, text: str) -> int:
 
     return len(chunks)
 
-def retrieve_chunks(query: str, user_id: str, k: int = 4) -> List[str]:
+def retrieve_chunks(query: str, user_id: str, k: int = 4) -> tuple[list[str], list[str]]:
     from app.services.embeddings import get_embedding
     collection = get_collection()
 
@@ -43,13 +43,32 @@ def retrieve_chunks(query: str, user_id: str, k: int = 4) -> List[str]:
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=k,
-        where={"user_id": user_id}
+        where={"user_id": user_id},
+        include=["documents", "metadatas", "distances"]
     )
 
     if not results["documents"] or not results["documents"][0]:
-        return []
+        return [], []
 
-    return results["documents"][0]
+    chunks = results["documents"][0]
+    distances = results["distances"][0]
+    metadatas = results["metadatas"][0]
+
+    ### Adjust similarity search
+    MIN_SIMILARITY = 0.3
+    filtered = [
+        (chunk, meta)
+        for chunk, dist, meta in zip(chunks, distances, metadatas)
+        if (1 - dist) >= MIN_SIMILARITY
+    ]
+
+    if not filtered:
+        return [], []
+
+    chunks = [c for c, _ in filtered]
+    doc_ids = [m.get("doc_id", "") for _, m in filtered]
+
+    return chunks, doc_ids
 
 def delete_document_chunks(doc_id: str):
     collection = get_collection()
