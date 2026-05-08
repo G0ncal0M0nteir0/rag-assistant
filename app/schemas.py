@@ -72,3 +72,9 @@ class ChatMessageOut(BaseModel):
 class ChatHistoryResponse(BaseModel):
     messages: list[ChatMessageOut]
     total: int
+
+class AdminStatsResponse(BaseModel):
+    total_users: int
+    total_documents: int
+    total_tokens_consumed: int
+    total_conversations: int

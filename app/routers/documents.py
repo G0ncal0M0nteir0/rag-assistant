@@ -9,9 +9,6 @@ from pptx import Presentation
 import fitz
 import uuid
 import os
-import logging
-
-logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -60,11 +57,9 @@ def upload_document(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    logger.info(f"User {current_user.email} is uploading document: {file.filename}")
     allowed = ["pdf", "txt", "md", "docx", "pptx"]
     ext = file.filename.lower().split(".")[-1]
     if ext not in allowed:
-        logger.warning(f"Unsupported file type uploaded: {ext}")
         raise HTTPException(
             status_code=400,
             detail="Only PDF, TXT, MD, DOCX and PPTX files are supported."
@@ -72,7 +67,6 @@ def upload_document(
 
     contents = file.file.read()
     if len(contents) > MAX_FILE_SIZE:
-        logger.warning(f"File too large: {len(contents)} bytes")
         raise HTTPException(
             status_code=400,
             detail="File too large. Maximum size is 10MB."
@@ -83,7 +77,6 @@ def upload_document(
         models.Document.filename == file.filename
     ).first()
     if existing:
-        logger.warning(f"Document already exists: {file.filename}")
         raise HTTPException(
             status_code=400,
             detail="A document with this name already exists."
@@ -95,15 +88,12 @@ def upload_document(
     with open(file_path, "wb") as f:
         f.write(contents)
 
-    logger.info(f"Extracting text from {file.filename}")
     try:
         text = extract_text(file_path, file.filename)
-    except HTTPException as e:
-        logger.error(f"Text extraction failed with HTTP error: {e.detail}")
+    except HTTPException:
         os.remove(file_path)
         raise
     except Exception as e:
-        logger.error(f"Text extraction failed: {str(e)}")
         os.remove(file_path)
         raise HTTPException(
             status_code=500,
@@ -111,7 +101,6 @@ def upload_document(
         )
 
     if not text.strip():
-        logger.warning(f"Document {file.filename} is empty")
         os.remove(file_path)
         raise HTTPException(
             status_code=400,
@@ -127,7 +116,6 @@ def upload_document(
     db.commit()
     db.refresh(doc_record)
 
-    logger.info(f"Storing text and indexing document {doc_record.id}")
     text_path = os.path.join(UPLOAD_DIR, f"{str(doc_record.id)}.txt")
     with open(text_path, "w", encoding="utf-8") as f:
         f.write(text)
@@ -140,9 +128,7 @@ def upload_document(
         )
         doc_record.status = "ready"
         doc_record.chunk_count = chunk_count
-        logger.info(f"Document {doc_record.id} processed successfully with {chunk_count} chunks")
     except Exception as e:
-        logger.error(f"Indexing failed for document {doc_record.id}: {str(e)}")
         doc_record.status = "failed"
         doc_record.chunk_count = 0
 

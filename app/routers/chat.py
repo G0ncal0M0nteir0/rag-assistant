@@ -10,9 +10,6 @@ from slowapi.util import get_remote_address
 from datetime import datetime
 from app.services.reranker import rerank
 import uuid
-import logging
-
-logger = logging.getLogger(__name__)
 
 limiter = Limiter(key_func=get_remote_address)
 router = APIRouter()
@@ -25,7 +22,6 @@ async def ask(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    logger.info(f"User {current_user.email} asked: '{body.question[:50]}...'")
     if body.session_id:
         session = db.query(models.ConversationSession).filter(
             models.ConversationSession.id == body.session_id,

@@ -9,11 +9,17 @@ from datetime import datetime, timedelta
 import uuid
 import secrets
 import os
-import logging
-
-logger = logging.getLogger(__name__)
+from sqlalchemy import func
 
 router = APIRouter()
+
+def get_current_admin(current_user: models.User = Depends(get_current_user)):
+    if current_user.is_admin != "true":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have administrative privileges."
+        )
+    return current_user
 
 @router.post("/register", response_model=schemas.UserOut)
 async def register(
@@ -138,8 +144,6 @@ async def forgot_password(
 ):
     user = db.query(models.User).filter(models.User.email == body.email).first()
     if not user:
-        # We return success even if user not found to avoid email enumeration
-        logger.info(f"Password reset requested for non-existent email: {body.email}")
         return {"message": "If this email is registered, you will receive a reset link."}
 
     token = secrets.token_urlsafe(32)
@@ -147,7 +151,6 @@ async def forgot_password(
     user.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
     db.commit()
 
-    logger.info(f"Password reset token generated for: {body.email}")
     background_tasks.add_task(send_password_reset_email, email=user.email, token=token)
 
     return {"message": "If this email is registered, you will receive a reset link."}
@@ -161,7 +164,6 @@ def reset_password(body: schemas.PasswordReset, db: Session = Depends(get_db)):
     ).first()
 
     if not user:
-        logger.warning("Invalid or expired password reset token used.")
         raise HTTPException(status_code=400, detail="Invalid or expired token.")
 
     if len(body.new_password) < 8:
@@ -172,7 +174,6 @@ def reset_password(body: schemas.PasswordReset, db: Session = Depends(get_db)):
     user.reset_token_expires = None
     db.commit()
 
-    logger.info(f"Password successfully reset for user: {user.email}")
     return {"message": "Password reset successfully. You can now log in."}
 
 
@@ -192,14 +193,31 @@ def update_me(
         if existing and str(existing.id) != str(current_user.id):
             raise HTTPException(status_code=400, detail="Email already in use.")
         current_user.email = body.email
-        logger.info(f"User {current_user.id} updated their email.")
 
     if body.password:
         if len(body.password) < 8:
             raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
         current_user.password = hash_password(body.password)
-        logger.info(f"User {current_user.id} updated their password.")
 
     db.commit()
     db.refresh(current_user)
     return current_user
+
+
+@router.get("/admin/stats", response_model=schemas.AdminStatsResponse)
+def get_admin_stats(
+    db: Session = Depends(get_db),
+    admin_user: models.User = Depends(get_current_admin)
+):
+    total_users = db.query(func.count(models.User.id)).scalar()
+    total_docs = db.query(func.count(models.Document.id)).scalar()
+    total_convs = db.query(func.count(models.ConversationSession.id)).scalar()
+    
+    total_tokens = db.query(func.sum(models.TokenUsage.total_tokens)).scalar() or 0
+    
+    return {
+        "total_users": total_users,
+        "total_documents": total_docs,
+        "total_tokens_consumed": total_tokens,
+        "total_conversations": total_convs
+    }

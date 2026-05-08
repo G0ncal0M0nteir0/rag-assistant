@@ -17,6 +17,7 @@ class User(Base):
     verification_token  = Column(String, nullable=True)
     reset_token         = Column(String, nullable=True)
     reset_token_expires = Column(DateTime, nullable=True)
+    is_admin            = Column(String, default="false")
     created_at          = Column(DateTime, default=datetime.utcnow)
 
     documents   = relationship("Document", back_populates="owner")
