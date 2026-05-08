@@ -3,11 +3,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas
-from app.auth import hash_password, verify_password, create_access_token
-from app.services.email import send_verification_email
+from app.auth import hash_password, verify_password, create_access_token, get_current_user
+from app.services.email import send_verification_email, send_password_reset_email
+from datetime import datetime, timedelta
 import uuid
 import secrets
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -124,3 +128,78 @@ def dev_verify(email: str, db: Session = Depends(get_db)):
     user.verification_token = None
     db.commit()
     return {"message": f"{email} verified successfully."}
+
+
+@router.post("/forgot-password")
+async def forgot_password(
+    body: schemas.PasswordResetRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
+    user = db.query(models.User).filter(models.User.email == body.email).first()
+    if not user:
+        # We return success even if user not found to avoid email enumeration
+        logger.info(f"Password reset requested for non-existent email: {body.email}")
+        return {"message": "If this email is registered, you will receive a reset link."}
+
+    token = secrets.token_urlsafe(32)
+    user.reset_token = token
+    user.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
+    db.commit()
+
+    logger.info(f"Password reset token generated for: {body.email}")
+    background_tasks.add_task(send_password_reset_email, email=user.email, token=token)
+
+    return {"message": "If this email is registered, you will receive a reset link."}
+
+
+@router.post("/reset-password")
+def reset_password(body: schemas.PasswordReset, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(
+        models.User.reset_token == body.token,
+        models.User.reset_token_expires > datetime.utcnow()
+    ).first()
+
+    if not user:
+        logger.warning("Invalid or expired password reset token used.")
+        raise HTTPException(status_code=400, detail="Invalid or expired token.")
+
+    if len(body.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+
+    user.password = hash_password(body.new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+    db.commit()
+
+    logger.info(f"Password successfully reset for user: {user.email}")
+    return {"message": "Password reset successfully. You can now log in."}
+
+
+@router.get("/me", response_model=schemas.UserOut)
+def get_me(current_user: models.User = Depends(get_current_user)):
+    return current_user
+
+
+@router.patch("/me", response_model=schemas.UserOut)
+def update_me(
+    body: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if body.email:
+        existing = db.query(models.User).filter(models.User.email == body.email).first()
+        if existing and str(existing.id) != str(current_user.id):
+            raise HTTPException(status_code=400, detail="Email already in use.")
+        current_user.email = body.email
+        logger.info(f"User {current_user.id} updated their email.")
+
+    if body.password:
+        if len(body.password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+        current_user.password = hash_password(body.password)
+        logger.info(f"User {current_user.id} updated their password.")
+
+    db.commit()
+    db.refresh(current_user)
+    return current_user

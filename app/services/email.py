@@ -34,3 +34,23 @@ async def send_verification_email(email: str, token: str):
 
     fm = FastMail(conf)
     await fm.send_message(message)
+
+async def send_password_reset_email(email: str, token: str):
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8000")
+    reset_link = f"{frontend_url}/auth/reset-password?token={token}"
+
+    message = MessageSchema(
+        subject="Reset your RAG Assistant password",
+        recipients=[email],
+        body=f"""
+        <h2>Password Reset Request</h2>
+        <p>You requested to reset your password. Click the link below to proceed:</p>
+        <a href="{reset_link}">Reset Password</a>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you did not request this, please ignore this email.</p>
+        """,
+        subtype=MessageType.html
+    )
+
+    fm = FastMail(conf)
+    await fm.send_message(message)

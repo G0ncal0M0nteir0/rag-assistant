@@ -15,6 +15,8 @@ class User(Base):
     password            = Column(String, nullable=False)
     is_verified         = Column(String, default="false")
     verification_token  = Column(String, nullable=True)
+    reset_token         = Column(String, nullable=True)
+    reset_token_expires = Column(DateTime, nullable=True)
     created_at          = Column(DateTime, default=datetime.utcnow)
 
     documents   = relationship("Document", back_populates="owner")
