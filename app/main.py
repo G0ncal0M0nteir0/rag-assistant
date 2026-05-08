@@ -6,10 +6,12 @@ from slowapi.errors import RateLimitExceeded
 from app.database import engine, Base
 from app import models
 from app.routers import auth, documents, chat
+from app.logging_config import setup_logging
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
+setup_logging()
 
 required_env_vars = ["DATABASE_URL", "SECRET_KEY", "GROQ_API_KEY"]
 for var in required_env_vars:

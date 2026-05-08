@@ -8,7 +8,11 @@ from app.services.llm import generate_answer, get_groq_limits
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from datetime import datetime
+from app.services.reranker import rerank
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 limiter = Limiter(key_func=get_remote_address)
 router = APIRouter()
@@ -21,6 +25,7 @@ async def ask(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    logger.info(f"User {current_user.email} asked: '{body.question[:50]}...'")
     if body.session_id:
         session = db.query(models.ConversationSession).filter(
             models.ConversationSession.id == body.session_id,
@@ -41,7 +46,14 @@ async def ask(
     chunks, doc_ids = retrieve_chunks(
         query=body.question,
         user_id=str(current_user.id),
-        k=4
+        k=8
+    )
+
+    chunks, doc_ids = rerank(
+        query=body.question,
+        chunks=chunks,
+        doc_ids=doc_ids,
+        top_k=4
     )
 
     sources = []
