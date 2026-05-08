@@ -7,7 +7,7 @@ from app.services.vectorstore import retrieve_chunks
 from app.services.llm import generate_answer, get_groq_limits
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from datetime import datetime
+from datetime import datetime, timezone
 from app.services.reranker import rerank
 import uuid
 
@@ -97,7 +97,7 @@ async def ask(
     )
     db.add(token_record)
 
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.commit()
 
     return schemas.ChatResponse(

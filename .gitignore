@@ -1,6 +1,6 @@
 # Python
 venv/
-_pycache_/
+__pycache__/
 *.pyc
 *.pyo
 *.egg-info/

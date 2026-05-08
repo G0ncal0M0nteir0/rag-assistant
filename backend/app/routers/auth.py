@@ -5,7 +5,7 @@ from app.database import get_db
 from app import models, schemas
 from app.auth import hash_password, verify_password, create_access_token, get_current_user
 from app.services.email import send_verification_email, send_password_reset_email
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import uuid
 import secrets
 import os
@@ -14,7 +14,7 @@ from sqlalchemy import func
 router = APIRouter()
 
 def get_current_admin(current_user: models.User = Depends(get_current_user)):
-    if current_user.is_admin != "true":
+    if not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have administrative privileges."
@@ -44,7 +44,7 @@ async def register(
         id=uuid.uuid4(),
         email=user.email,
         password=hash_password(user.password),
-        is_verified="false",
+        is_verified=False,
         verification_token=verification_token
     )
     db.add(new_user)
@@ -68,10 +68,10 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=400, detail="Invalid or expired verification token.")
 
-    if user.is_verified == "true":
+    if user.is_verified:
         return {"message": "Email already verified. You can log in."}
 
-    user.is_verified = "true"
+    user.is_verified = True
     user.verification_token = None
     db.commit()
 
@@ -86,7 +86,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             detail="Incorrect email or password"
         )
 
-    if user.is_verified == "false":
+    if not user.is_verified:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Please verify your email before logging in."
@@ -104,7 +104,7 @@ async def resend_verification(
     existing = db.query(models.User).filter(models.User.email == user.email).first()
     if not existing:
         raise HTTPException(status_code=404, detail="Email not found.")
-    if existing.is_verified == "true":
+    if existing.is_verified:
         return {"message": "Email already verified."}
 
     new_token = secrets.token_urlsafe(32)
@@ -130,7 +130,7 @@ def dev_verify(email: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    user.is_verified = "true"
+    user.is_verified = True
     user.verification_token = None
     db.commit()
     return {"message": f"{email} verified successfully."}
@@ -148,7 +148,7 @@ async def forgot_password(
 
     token = secrets.token_urlsafe(32)
     user.reset_token = token
-    user.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
+    user.reset_token_expires = datetime.now(timezone.utc) + timedelta(hours=1)
     db.commit()
 
     background_tasks.add_task(send_password_reset_email, email=user.email, token=token)
@@ -160,7 +160,7 @@ async def forgot_password(
 def reset_password(body: schemas.PasswordReset, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(
         models.User.reset_token == body.token,
-        models.User.reset_token_expires > datetime.utcnow()
+        models.User.reset_token_expires > datetime.now(timezone.utc)
     ).first()
 
     if not user:

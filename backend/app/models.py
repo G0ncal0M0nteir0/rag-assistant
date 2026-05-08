@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text, Integer
+from sqlalchemy import Boolean, Column, String, DateTime, ForeignKey, Text, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -13,11 +13,11 @@ class User(Base):
     id                  = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email               = Column(String, unique=True, index=True, nullable=False)
     password            = Column(String, nullable=False)
-    is_verified         = Column(String, default="false")
+    is_verified         = Column(Boolean, default=False, nullable=False)
     verification_token  = Column(String, nullable=True)
     reset_token         = Column(String, nullable=True)
     reset_token_expires = Column(DateTime, nullable=True)
-    is_admin            = Column(String, default="false")
+    is_admin            = Column(Boolean, default=False, nullable=False)
     created_at          = Column(DateTime, default=datetime.utcnow)
 
     documents   = relationship("Document", back_populates="owner")
@@ -32,6 +32,7 @@ class Document(Base):
     id          = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id     = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     filename    = Column(String, nullable=False)
+    file_path   = Column(String, nullable=True)
     status      = Column(String, default="processing")
     chunk_count = Column(Integer, default=0)
     created_at  = Column(DateTime, default=datetime.utcnow)

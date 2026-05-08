@@ -14,9 +14,21 @@ router = APIRouter()
 
 UPLOAD_DIR = "uploads"
 
-# Definido como 50 MB (possivel ajustar)
 MAX_FILE_SIZE = 50 * 1024 * 1024
+MAX_FILE_SIZE_MB = MAX_FILE_SIZE // (1024 * 1024)
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+def get_original_upload_paths(doc: models.Document) -> list[str]:
+    if doc.file_path:
+        return [doc.file_path]
+
+    suffix = f"_{doc.filename}"
+    matches = [
+        os.path.join(UPLOAD_DIR, name)
+        for name in os.listdir(UPLOAD_DIR)
+        if name.endswith(suffix)
+    ]
+    return matches if len(matches) == 1 else []
 
 def extract_text(file_path: str, filename: str) -> str:
     ext = filename.lower().split(".")[-1]
@@ -69,7 +81,7 @@ def upload_document(
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=400,
-            detail="File too large. Maximum size is 10MB."
+            detail=f"File too large. Maximum size is {MAX_FILE_SIZE_MB}MB."
         )
 
     existing = db.query(models.Document).filter(
@@ -110,7 +122,8 @@ def upload_document(
     doc_record = models.Document(
         id=uuid.uuid4(),
         user_id=current_user.id,
-        filename=file.filename
+        filename=file.filename,
+        file_path=file_path
     )
     db.add(doc_record)
     db.commit()
@@ -163,6 +176,7 @@ def delete_document(
         raise HTTPException(status_code=404, detail="Document not found.")
 
     for path in [
+        *get_original_upload_paths(doc),
         os.path.join(UPLOAD_DIR, f"{document_id}.txt"),
     ]:
         if os.path.exists(path):

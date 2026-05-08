@@ -3,14 +3,14 @@ from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.database import engine, Base
-from app import models
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, documents, chat
 from app.logging_config import setup_logging
 from dotenv import load_dotenv
 import os
 import time
 import logging
+
 
 load_dotenv()
 setup_logging()
@@ -22,11 +22,20 @@ for var in required_env_vars:
     if not os.getenv(var):
         raise RuntimeError(f"Missing required environment variable: {var}")
 
-Base.metadata.create_all(bind=engine)
-
 limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(title="RAG Assistant")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

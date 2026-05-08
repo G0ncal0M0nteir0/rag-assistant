@@ -2,7 +2,6 @@ import chromadb
 from app.services.embeddings import get_embeddings, chunk_text, get_embedding
 from typing import List, Tuple
 from rank_bm25 import BM25Okapi
-import uuid
 
 client = chromadb.PersistentClient(path="./chroma_db")
 
@@ -121,11 +120,12 @@ def retrieve_chunks(query: str, user_id: str, k: int = 4) -> Tuple[List[str], Li
 
     MIN_SIMILARITY = 0.3
     semantic_chunks = {chunk[:100] for chunk, _, score in semantic_results if score >= MIN_SIMILARITY}
+    keyword_chunks = {chunk[:100] for chunk, _, score in keyword_results if score > 0}
 
     final = []
     for chunk, doc_id in merged:
         key = chunk[:100]
-        if key in semantic_chunks or keyword_results:
+        if key in semantic_chunks or key in keyword_chunks:
             final.append((chunk, doc_id))
         if len(final) >= k:
             break

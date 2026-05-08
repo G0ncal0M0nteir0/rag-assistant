@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from uuid import UUID
 from datetime import datetime
 from typing import Optional
@@ -19,24 +19,24 @@ class PasswordReset(BaseModel):
     new_password: str
 
 class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     email: str
-    is_verified: str
+    is_verified: bool
     created_at: datetime
-    class Config:
-        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 class TokenUsageOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     prompt_tokens: int
     answer_tokens: int
     total_tokens: int
     created_at: datetime
-    class Config:
-        from_attributes = True
 
 class TokenStatsResponse(BaseModel):
     total_tokens_used: int
@@ -44,13 +44,13 @@ class TokenStatsResponse(BaseModel):
     groq_limits: dict
 
 class DocumentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     filename: str
     status: str
     chunk_count: int
     created_at: datetime
-    class Config:
-        from_attributes = True
 
 class ChatRequest(BaseModel):
     question: str
@@ -62,12 +62,12 @@ class ChatResponse(BaseModel):
     tokens_used: int = 0
 
 class ChatMessageOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     question: str
     answer: str
     created_at: datetime
-    class Config:
-        from_attributes = True
 
 class ChatHistoryResponse(BaseModel):
     messages: list[ChatMessageOut]

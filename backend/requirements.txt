@@ -1,4 +1,5 @@
 aiosmtplib==5.1.0
+alembic==1.17.2
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.13.0
@@ -53,6 +54,7 @@ mmh3==5.2.1
 mpmath==1.3.0
 networkx==3.6.1
 numpy==2.4.4
+nltk==3.9.2
 nvidia-cublas==13.1.0.3
 nvidia-cuda-cupti==13.0.85
 nvidia-cuda-nvrtc==13.0.88
@@ -100,7 +102,9 @@ python-jose==3.5.0
 python-multipart==0.0.27
 python-pptx==1.0.2
 PyYAML==6.0.3
+pytest==9.0.2
 referencing==0.37.0
+rank-bm25==0.2.2
 regex==2026.4.4
 requests==2.33.1
 requests-oauthlib==2.0.0
