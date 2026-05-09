@@ -7,13 +7,15 @@ export default function Navbar() {
         RAG Assistant
       </h1>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <Link href="/login">
-          <button>Login</button>
+          <button className="px-4 py-2.5 rounded-lg text-white hover:bg-zinc-800 transition-colors">
+            Login
+          </button>
         </Link>
 
         <Link href="/register">
-          <button className="bg-white text-black px-4 py-2 rounded-lg">
+          <button className="bg-white text-black px-4 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors font-medium">
             Get Started
           </button>
         </Link>
