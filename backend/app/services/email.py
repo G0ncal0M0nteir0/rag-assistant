@@ -16,7 +16,7 @@ conf = ConnectionConfig(
 )
 
 async def send_verification_email(email: str, token: str):
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8000")
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
     verification_link = f"{frontend_url}/auth/verify?token={token}"
 
     message = MessageSchema(

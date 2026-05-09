@@ -24,7 +24,7 @@ export default function RegisterPage() {
       throw new Error(error?.detail ?? "Unable to register");
     }
 
-    router.push("/login");
+    router.push("/login?registered=1");
   };
 
   return (
