@@ -248,7 +248,7 @@ export default function AuthForm({
                   <span className="text-zinc-400">Remember me</span>
                 </label>
                 <Link
-                  href="#"
+                  href="/forgot-password"
                   className="text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   Forgot password?
