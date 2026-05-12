@@ -18,14 +18,14 @@ const items = [
   {
     title: "Chat",
     description: "Open the assistant and start a conversation.",
-    href: "/chat",
+    href: "main/chat",
     icon: MessageSquare,
     accent: "from-cyan-500 to-sky-500",
   },
   {
     title: "Knowledge Base",
     description: "Upload and manage your documents.",
-    href: "/knowledge_base",
+    href: "/main/knowledge_base",
     icon: FileUp,
     accent: "from-sky-500 to-blue-500",
   },
