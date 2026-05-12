@@ -34,21 +34,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)]">
-      <div className="mx-auto w-full max-w-md px-4 py-10">
-        {registered === "1" && (
-          <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 backdrop-blur-xl">
-            Registration successful. Please check your email and verify your account before logging in.
-          </div>
-        )}
-
-        <AuthForm
-          type="login"
-          title="Welcome Back"
-          subtitle="Sign in to access your documents and chat"
-          onSubmit={handleSubmit}
-        />
-      </div>
-    </div>
+    <AuthForm
+      type="login"
+      title="Welcome Back"
+      subtitle="Sign in to access your documents and chat"
+      onSubmit={handleSubmit}
+      notice={
+        registered === "1"
+          ? "Registration successful. Please check your email and verify your account before logging in."
+          : undefined
+      }
+    />
   );
 }

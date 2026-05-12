@@ -11,6 +11,7 @@ interface AuthFormProps {
   subtitle: string;
   onSubmit: (data: Record<string, string>) => Promise<void> | void;
   isLoading?: boolean;
+  notice?: string;
 }
 
 export default function AuthForm({
@@ -19,6 +20,7 @@ export default function AuthForm({
   subtitle,
   onSubmit,
   isLoading = false,
+  notice,
 }: AuthFormProps) {
   const [formData, setFormData] = useState({
     email: "",
@@ -107,25 +109,34 @@ export default function AuthForm({
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white px-4">
+    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="w-full max-w-md"
+        className="relative mx-auto w-full max-w-md"
       >
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 pointer-events-none" />
+        <div className="absolute -top-14 -right-10 h-36 w-36 rounded-full bg-cyan-400/20 blur-3xl" />
+        <div className="absolute -bottom-12 -left-10 h-40 w-40 rounded-full bg-sky-500/15 blur-3xl" />
 
         <motion.div
           variants={itemVariants}
-          className="relative bg-gradient-to-br from-zinc-900 to-zinc-800/50 border border-zinc-700/50 rounded-2xl p-8 backdrop-blur-xl"
+          className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur-xl"
         >
           {/* Header */}
           <motion.div variants={itemVariants} className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">{title}</h1>
             <p className="text-zinc-400">{subtitle}</p>
           </motion.div>
+
+          {notice && (
+            <motion.div
+              variants={itemVariants}
+              className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
+            >
+              {notice}
+            </motion.div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -297,15 +308,13 @@ export default function AuthForm({
               </Link>
             </p>
           </motion.div>
+          <motion.p
+            variants={itemVariants}
+            className="mt-6 border-t border-white/10 pt-4 text-center text-xs text-slate-400"
+          >
+            By continuing, you agree to our Terms of Service and Privacy Policy
+          </motion.p>
         </motion.div>
-
-        {/* Bottom info text */}
-        <motion.p
-          variants={itemVariants}
-          className="text-center text-zinc-500 text-xs mt-6"
-        >
-          By continuing, you agree to our Terms of Service and Privacy Policy
-        </motion.p>
       </motion.div>
     </main>
   );
