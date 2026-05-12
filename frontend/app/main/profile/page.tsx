@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import {
   AlertCircle,
   CheckCircle2,
+  Eye,
+  EyeOff,
   Loader2,
   Lock,
   Mail,
@@ -18,6 +20,7 @@ import {
 type UserProfile = {
   id: string;
   email: string;
+  full_name: string | null;
   is_verified: boolean;
   created_at: string;
 };
@@ -26,6 +29,7 @@ export default function ProfilePage() {
   const router = useRouter();
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,6 +37,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [showId, setShowId] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -67,6 +72,7 @@ export default function ProfilePage() {
         }
 
         setProfile(data);
+        setFullName(data.full_name ?? "");
         setEmail(data.email);
       } catch (loadError) {
         setError(
@@ -87,6 +93,11 @@ export default function ProfilePage() {
 
     if (!email.trim()) {
       setError("Email is required");
+      return;
+    }
+
+    if (!fullName.trim()) {
+      setError("Full name is required");
       return;
     }
 
@@ -123,8 +134,9 @@ export default function ProfilePage() {
     setSaving(true);
 
     try {
-      const payload: { email: string; password?: string } = {
+      const payload: { email: string; full_name?: string; password?: string } = {
         email: email.trim(),
+        full_name: fullName.trim(),
       };
 
       if (newPassword) {
@@ -156,6 +168,7 @@ export default function ProfilePage() {
       }
 
       setProfile(data);
+      setFullName(data.full_name ?? "");
       setEmail(data.email);
       setNewPassword("");
       setConfirmPassword("");
@@ -233,13 +246,42 @@ export default function ProfilePage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <motion.div variants={itemVariants} className="grid gap-5 md:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <div className="mb-2 flex items-center gap-2 text-slate-300">
-                      <User className="h-4 w-4 text-cyan-300" />
-                      <span className="text-sm font-medium">User ID</span>
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <User className="h-4 w-4 text-cyan-300" />
+                        <span className="text-sm font-medium">Account ID</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowId(!showId)}
+                        className="rounded-lg bg-cyan-500/20 p-1.5 text-cyan-300 transition hover:bg-cyan-500/30"
+                        title={showId ? "Hide ID" : "Show ID"}
+                      >
+                        {showId ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
-                    <p className="break-all text-sm text-slate-400">
-                      {profile?.id ?? "-"}
-                    </p>
+                    <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                      <p className="flex-1 break-all text-xs text-slate-400 font-mono">
+                        {showId ? profile?.id : "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"}
+                      </p>
+                      {showId && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (profile?.id) {
+                              navigator.clipboard.writeText(profile.id);
+                            }
+                          }}
+                          className="ml-2 text-xs text-cyan-300 transition hover:text-cyan-200"
+                        >
+                          Copy
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
@@ -254,6 +296,18 @@ export default function ProfilePage() {
                     <p className="text-sm text-slate-400">
                       {profile?.is_verified ? "Verified" : "Not verified"}
                     </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+                    <div className="mb-2 flex items-center gap-2 text-slate-300">
+                      <User className="h-4 w-4 text-cyan-300" />
+                      <span className="text-sm font-medium">Full Name</span>
+                    </div>
+                    <input
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                    />
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-5">

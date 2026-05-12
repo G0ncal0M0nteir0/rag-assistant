@@ -5,10 +5,12 @@ from typing import Optional
 
 class UserCreate(BaseModel):
     email: EmailStr
+    full_name: str
     password: str
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
     password: Optional[str] = None
 
 class PasswordResetRequest(BaseModel):
@@ -23,6 +25,7 @@ class UserOut(BaseModel):
 
     id: UUID
     email: str
+    full_name: Optional[str]
     is_verified: bool
     is_admin: bool
     created_at: datetime

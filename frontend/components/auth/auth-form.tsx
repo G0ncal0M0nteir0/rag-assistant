@@ -25,7 +25,7 @@ export default function AuthForm({
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    ...(type === "register" && { name: "", confirmPassword: "" }),
+    ...(type === "register" && { full_name: "", confirmPassword: "" }),
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -52,8 +52,8 @@ export default function AuthForm({
     }
 
     if (type === "register") {
-      if (!formData.name) {
-        newErrors.name = "Name is required";
+      if (!formData.full_name) {
+        newErrors.full_name = "Full name is required";
       }
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = "Passwords do not match";
@@ -143,25 +143,25 @@ export default function AuthForm({
             {/* Name field (register only) */}
             {type === "register" && (
               <motion.div variants={itemVariants}>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                <label htmlFor="full_name" className="block text-sm font-medium mb-2">
                   Full Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 w-5 h-5" />
                   <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name || ""}
+                    id="full_name"
+                    name="full_name"
+                    value={formData.full_name || ""}
                     onChange={handleChange}
                     placeholder="John Doe"
                     className={`w-full bg-zinc-800/50 border ${
-                      errors.name ? "border-red-500" : "border-zinc-700"
+                      errors.full_name ? "border-red-500" : "border-zinc-700"
                     } rounded-lg pl-10 pr-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all`}
                   />
                 </div>
-                {errors.name && (
-                  <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+                {errors.full_name && (
+                  <p className="text-red-400 text-sm mt-1">{errors.full_name}</p>
                 )}
               </motion.div>
             )}

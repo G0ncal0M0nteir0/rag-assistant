@@ -107,6 +107,7 @@ async def register(
     new_user = models.User(
         id=uuid.uuid4(),
         email=user.email,
+        full_name=user.full_name,
         password=hash_password(user.password),
         is_verified=False,
         verification_token=verification_token
@@ -264,6 +265,9 @@ def update_me(
         if existing and str(existing.id) != str(current_user.id):
             raise HTTPException(status_code=400, detail="Email already in use.")
         current_user.email = body.email
+
+    if body.full_name:
+        current_user.full_name = body.full_name
 
     if body.password:
         if len(body.password) < 8:

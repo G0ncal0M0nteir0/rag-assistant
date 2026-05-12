@@ -14,6 +14,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: data.email,
+          full_name: data.full_name,
           password: data.password,
         }),
       }
