@@ -33,6 +33,30 @@ type UsageData = {
   groq_limits: Record<string, unknown>;
 };
 
+type QuotaWindow = {
+  window: string;
+  limit_requests: number;
+  limit_tokens: number;
+  used_requests: number;
+  used_tokens: number;
+  remaining_requests_global: number;
+  remaining_tokens_global: number;
+  registered_users: number;
+  active_users: number;
+  per_user_requests_allocated: number;
+  per_user_tokens_allocated: number;
+  user_used_requests: number;
+  user_used_tokens: number;
+  user_available_requests: number;
+  user_available_tokens: number;
+};
+
+type QuotaData = {
+  model: string;
+  minute: QuotaWindow;
+  day: QuotaWindow;
+};
+
 type ChatResponse = {
   answer: string;
   sources: string[];
@@ -53,8 +77,10 @@ export default function MainChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [usage, setUsage] = useState<UsageData | null>(null);
+  const [quota, setQuota] = useState<QuotaData | null>(null);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [loadingUsage, setLoadingUsage] = useState(true);
+  const [loadingQuota, setLoadingQuota] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [error, setError] = useState("");
@@ -102,6 +128,39 @@ export default function MainChatPage() {
     }
   };
 
+  const loadQuota = async () => {
+    const headers = authHeaders();
+
+    if (!headers) {
+      router.push("/login");
+      return;
+    }
+
+    setLoadingQuota(true);
+
+    try {
+      const response = await fetch(`${apiBase}/chat/quota`, { headers });
+      const data = (await response.json().catch(() => null)) as QuotaData | null;
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("token_type");
+          router.push("/login");
+          return;
+        }
+
+        throw new Error(data?.model ? "Unable to load quota" : "Unable to load quota");
+      }
+
+      setQuota(data);
+    } catch (quotaError) {
+      setError(quotaError instanceof Error ? quotaError.message : "Unable to load quota");
+    } finally {
+      setLoadingQuota(false);
+    }
+  };
+
   const loadHistory = async () => {
     const headers = authHeaders();
 
@@ -141,6 +200,7 @@ export default function MainChatPage() {
 
   useEffect(() => {
     loadUsage();
+    loadQuota();
     loadHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -216,7 +276,7 @@ export default function MainChatPage() {
       setHistory((prev) => [...prev, assistantMessage]);
       setMessage(`Used ${data?.tokens_used ?? 0} tokens.`);
 
-      await Promise.all([loadUsage(), loadHistory()]);
+      await Promise.all([loadUsage(), loadQuota(), loadHistory()]);
     } catch (askError) {
       setMessages((prev) => prev.filter((entry) => entry.id !== optimisticUserMessage.id));
       setError(askError instanceof Error ? askError.message : "Unable to send message");
@@ -263,7 +323,7 @@ export default function MainChatPage() {
       setMessages([]);
       setHistory([]);
       setMessage(data?.message ?? "Chat history cleared.");
-      await loadUsage();
+      await Promise.all([loadUsage(), loadQuota()]);
     } catch (clearError) {
       setError(clearError instanceof Error ? clearError.message : "Unable to clear history");
     } finally {
@@ -370,6 +430,36 @@ export default function MainChatPage() {
                   </span>
                 </div>
 
+                <div className="mb-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Per-user requests</div>
+                    <div className="mt-2 text-2xl font-semibold text-white">
+                      {loadingQuota ? (
+                        <Loader2 className="h-6 w-6 animate-spin text-cyan-400" />
+                      ) : (
+                        quota?.day.user_available_requests ?? 0
+                      )}
+                    </div>
+                    <p className="mt-2 text-xs text-slate-500">
+                      Remaining for you in the current day window.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Per-user tokens</div>
+                    <div className="mt-2 text-2xl font-semibold text-white">
+                      {loadingQuota ? (
+                        <Loader2 className="h-6 w-6 animate-spin text-cyan-400" />
+                      ) : (
+                        quota?.day.user_available_tokens ?? 0
+                      )}
+                    </div>
+                    <p className="mt-2 text-xs text-slate-500">
+                      Remaining for you in the current day window.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="mb-5 max-h-[30rem] space-y-4 overflow-y-auto rounded-3xl border border-white/10 bg-white/5 p-4">
                   {loadingHistory ? (
                     <div className="flex items-center justify-center py-16">
@@ -449,26 +539,40 @@ export default function MainChatPage() {
                     <h2 className="text-xl font-semibold">Usage</h2>
                   </div>
 
-                  {loadingUsage ? (
+                  {loadingUsage || loadingQuota ? (
                     <div className="flex items-center justify-center py-12">
                       <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
                     </div>
                   ) : (
                     <div className="space-y-3 text-sm text-slate-300">
                       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <div className="text-slate-500">Total tokens used</div>
-                        <div className="mt-1 text-2xl font-semibold text-white">
-                          {(usage?.total_tokens_used ?? 0).toLocaleString()}
+                        <div className="text-slate-500">Your daily allocation</div>
+                        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                          <div>
+                            <div className="text-xs text-slate-500">Requests left</div>
+                            <div className="text-xl font-semibold text-white">{quota?.day.user_available_requests ?? 0}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-slate-500">Tokens left</div>
+                            <div className="text-xl font-semibold text-white">{quota?.day.user_available_tokens ?? 0}</div>
+                          </div>
                         </div>
                       </div>
                       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <div className="text-slate-500">Total requests</div>
-                        <div className="mt-1 text-2xl font-semibold text-white">
-                          {usage?.total_requests ?? 0}
+                        <div className="text-slate-500">Global usage this day</div>
+                        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                          <div>
+                            <div className="text-xs text-slate-500">Requests used</div>
+                            <div className="text-xl font-semibold text-white">{quota?.day.used_requests ?? 0}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-slate-500">Tokens used</div>
+                            <div className="text-xl font-semibold text-white">{quota?.day.used_tokens ?? 0}</div>
+                          </div>
                         </div>
                       </div>
                       <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-xs leading-5 text-slate-400">
-                        <div className="mb-2 text-sm font-medium text-slate-200">Groq limits</div>
+                        <div className="mb-2 text-sm font-medium text-slate-200">Model limits</div>
                         <pre className="overflow-auto whitespace-pre-wrap break-words text-[11px] text-slate-400">
                           {JSON.stringify(usage?.groq_limits ?? {}, null, 2)}
                         </pre>

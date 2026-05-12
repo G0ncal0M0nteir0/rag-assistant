@@ -74,6 +74,30 @@ class ChatHistoryResponse(BaseModel):
     messages: list[ChatMessageOut]
     total: int
 
+
+class ChatQuotaWindowResponse(BaseModel):
+    window: str
+    limit_requests: int
+    limit_tokens: int
+    used_requests: int
+    used_tokens: int
+    remaining_requests_global: int
+    remaining_tokens_global: int
+    registered_users: int
+    active_users: int
+    per_user_requests_allocated: int
+    per_user_tokens_allocated: int
+    user_used_requests: int
+    user_used_tokens: int
+    user_available_requests: int
+    user_available_tokens: int
+
+
+class ChatQuotaResponse(BaseModel):
+    model: str
+    minute: ChatQuotaWindowResponse
+    day: ChatQuotaWindowResponse
+
 class AdminStatsResponse(BaseModel):
     total_users: int
     total_documents: int

@@ -5,6 +5,7 @@ from app import models, schemas
 from app.auth import get_current_user
 from app.services.vectorstore import retrieve_chunks
 from app.services.llm import generate_answer, get_groq_limits
+from app.services.quota import get_user_quota
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from datetime import datetime, timezone
@@ -123,6 +124,13 @@ def get_usage(
         total_requests=total_requests,
         groq_limits=get_groq_limits()
     )
+
+@router.get("/quota", response_model=schemas.ChatQuotaResponse)
+def get_quota(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    return get_user_quota(db=db, current_user=current_user)
 
 @router.get("/history", response_model=schemas.ChatHistoryResponse)
 def get_history(
