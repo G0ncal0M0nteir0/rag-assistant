@@ -1,11 +1,19 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between px-8 py-6 border-b border-zinc-800">
-      <h1 className="text-xl font-bold">
-        RAG Assistant
-      </h1>
+    <nav className="flex h-20 items-center justify-between px-8 border-b border-zinc-800">
+      <div className="flex h-full items-center">
+        <Image
+          src="/photos/logo_symbol.png"
+          alt="RAG Assistant logo"
+          width={80}
+          height={80}
+          className="h-full w-auto object-contain"
+          priority
+        />
+      </div>
 
       <div className="flex gap-4 items-center">
         <Link href="/login">
