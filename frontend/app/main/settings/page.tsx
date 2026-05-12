@@ -258,9 +258,6 @@ export default function SettingsPage() {
                     </label>
                     <input
                       type="number"
-                      min="0"
-                      max="1"
-                      step="0.1"
                       value={settings.temperature}
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, temperature: e.target.value }))
@@ -271,13 +268,10 @@ export default function SettingsPage() {
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <label className="mb-2 block text-sm font-medium text-slate-200">
-                      Top-K retrieval
+                      Top K
                     </label>
                     <input
                       type="number"
-                      min="1"
-                      max="20"
-                      step="1"
                       value={settings.topK}
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, topK: e.target.value }))
@@ -285,45 +279,13 @@ export default function SettingsPage() {
                       className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
-                </div>
 
-                <ToggleRow
-                  title="Show citations"
-                  description="Display sources and document references in answers."
-                  enabled={settings.citationsEnabled}
-                  onChange={(value) =>
-                    setSettings((prev) => ({ ...prev, citationsEnabled: value }))
-                  }
-                  icon={Database}
-                />
-
-                <ToggleRow
-                  title="Auto-save chats"
-                  description="Keep your conversations saved automatically."
-                  enabled={settings.autoSaveChats}
-                  onChange={(value) =>
-                    setSettings((prev) => ({ ...prev, autoSaveChats: value }))
-                  }
-                  icon={Bot}
-                />
-              </motion.section>
-
-              <motion.section variants={itemVariants} className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Database className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">Documents</h2>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <label className="mb-2 block text-sm font-medium text-slate-200">
                       Chunk size
                     </label>
                     <input
                       type="number"
-                      min="200"
-                      max="2000"
-                      step="50"
                       value={settings.chunkSize}
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, chunkSize: e.target.value }))
@@ -331,66 +293,29 @@ export default function SettingsPage() {
                       className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
-
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
-                      Vector store behavior
-                    </label>
-                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-slate-300">
-                      <Zap className="h-4 w-4 text-cyan-300" />
-                      Automatic indexing on upload
-                    </div>
-                  </div>
                 </div>
-
-                <ToggleRow
-                  title="Auto-index uploaded documents"
-                  description="Index files automatically when they are uploaded."
-                  enabled={settings.autoIndexDocuments}
-                  onChange={(value) =>
-                    setSettings((prev) => ({ ...prev, autoIndexDocuments: value }))
-                  }
-                  icon={Database}
-                />
               </motion.section>
 
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Palette className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">Appearance</h2>
+                  <Database className="h-5 w-5 text-cyan-300" />
+                  <h2 className="text-xl font-semibold">Data & Privacy</h2>
                 </div>
 
-                <ToggleRow
-                  title="Dark mode"
-                  description="Use the dark workspace theme."
-                  enabled={settings.darkMode}
-                  onChange={(value) =>
-                    setSettings((prev) => ({ ...prev, darkMode: value }))
-                  }
-                  icon={Moon}
-                />
-              </motion.section>
-
-              <motion.section variants={itemVariants} className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">Privacy & data</h2>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4">
                   <button
                     type="button"
                     onClick={handleExportData}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:border-cyan-400/30 hover:bg-black/30"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
                   >
                     <Download className="h-4 w-4" />
-                    Export my data
+                    Export data
                   </button>
 
                   <button
                     type="button"
                     onClick={handleClearChats}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:border-cyan-400/30 hover:bg-black/30"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
                   >
                     <Trash2 className="h-4 w-4" />
                     Clear chat history
@@ -399,7 +324,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={handleDeleteAccount}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/20 hover:text-red-100"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-100 transition hover:bg-red-500/20"
                   >
                     <Trash2 className="h-4 w-4" />
                     Delete account
@@ -407,16 +332,20 @@ export default function SettingsPage() {
                 </div>
               </motion.section>
 
-              <motion.section variants={itemVariants}>
+              <motion.div variants={itemVariants} className="flex items-center justify-between">
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-sky-500 px-5 py-3.5 font-semibold text-slate-950 transition hover:from-cyan-400 hover:to-sky-400"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.02]"
                 >
-                  <Save className="h-5 w-5" />
-                  Save changes
+                  <Save className="h-4 w-4" />
+                  Save settings
                 </button>
-              </motion.section>
+
+                <Link href="/main" className="text-sm text-cyan-300 transition hover:text-cyan-200">
+                  Back to workspace
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>

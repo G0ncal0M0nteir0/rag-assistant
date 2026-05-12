@@ -259,98 +259,65 @@ export default function ProfilePage() {
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
                     <div className="mb-2 flex items-center gap-2 text-slate-300">
                       <Mail className="h-4 w-4 text-cyan-300" />
-                      <span className="text-sm font-medium">Created at</span>
+                      <span className="text-sm font-medium">Email</span>
                     </div>
-                    <p className="text-sm text-slate-400">
-                      {formattedCreatedAt || "-"}
-                    </p>
+                    <input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                    />
                   </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="grid gap-5">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
-                      Email address
-                    </label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          if (error) setError("");
-                          if (message) setMessage("");
-                        }}
-                        className="w-full rounded-2xl border border-white/10 bg-black/20 py-3 pl-10 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
-                        placeholder="you@example.com"
-                      />
-                    </div>
+                <motion.div variants={itemVariants} className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
+                  <div className="flex items-center gap-2 text-slate-300">
+                    <Lock className="h-4 w-4 text-cyan-300" />
+                    <span className="text-sm font-medium">Change password</span>
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
-                      New password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
-                      <input
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => {
-                          setNewPassword(e.target.value);
-                          if (error) setError("");
-                          if (message) setMessage("");
-                        }}
-                        className="w-full rounded-2xl border border-white/10 bg-black/20 py-3 pl-10 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
-                        placeholder="Leave blank to keep current password"
-                      />
+                    <div className="mb-2 flex items-center gap-2 text-slate-300">
+                      <Lock className="h-4 w-4 text-cyan-300" />
+                      <span className="text-sm font-medium">Password</span>
                     </div>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                    />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
-                      Confirm new password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
-                      <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => {
-                          setConfirmPassword(e.target.value);
-                          if (error) setError("");
-                          if (message) setMessage("");
-                        }}
-                        className="w-full rounded-2xl border border-white/10 bg-black/20 py-3 pl-10 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
-                        placeholder="Confirm new password"
-                      />
+                    <div className="mb-2 flex items-center gap-2 text-slate-300">
+                      <Lock className="h-4 w-4 text-cyan-300" />
+                      <span className="text-sm font-medium">Confirm Password</span>
                     </div>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                    />
                   </div>
                 </motion.div>
 
                 {error && (
-                  <motion.div
-                    variants={itemVariants}
-                    className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
-                  >
+                  <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
                     <div className="flex items-start gap-3">
                       <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
                       <p>{error}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
 
                 {message && (
-                  <motion.div
-                    variants={itemVariants}
-                    className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
-                  >
+                  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
                       <p>{message}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
 
                 <motion.button
@@ -360,17 +327,19 @@ export default function ProfilePage() {
                   className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-sky-500 px-5 py-3.5 font-semibold text-slate-950 transition hover:from-cyan-400 hover:to-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Saving changes...
-                    </>
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <>
-                      <Save className="h-5 w-5" />
-                      Save changes
-                    </>
+                    <Save className="h-4 w-4" />
                   )}
+                  Save Changes
                 </motion.button>
+
+                <motion.p
+                  variants={itemVariants}
+                  className="text-center text-xs text-slate-500"
+                >
+                  Joined {formattedCreatedAt}
+                </motion.p>
               </form>
             )}
           </motion.div>

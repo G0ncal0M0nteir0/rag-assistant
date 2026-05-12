@@ -32,14 +32,14 @@ const items = [
   {
     title: "Profile",
     description: "Update your personal information.",
-    href: "/profile",
+    href: "/main/profile",
     icon: User,
     accent: "from-emerald-500 to-teal-500",
   },
   {
     title: "Settings",
     description: "Adjust your account and app preferences.",
-    href: "/settings",
+    href: "/main/settings",
     icon: Settings,
     accent: "from-indigo-500 to-violet-500",
   },
