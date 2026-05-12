@@ -18,7 +18,7 @@ const items = [
   {
     title: "Chat",
     description: "Open the assistant and start a conversation.",
-    href: "main/chat",
+    href: "/main/chat",
     icon: MessageSquare,
     accent: "from-cyan-500 to-sky-500",
   },
