@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -78,7 +79,13 @@ function ToggleRow({
 }
 
 export default function SettingsPage() {
+  const router = useRouter();
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
   const [savedMessage, setSavedMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
   const [settings, setSettings] = useState<SettingsState>({
     emailNotifications: true,
     securityAlerts: true,
@@ -94,20 +101,113 @@ export default function SettingsPage() {
     chunkSize: "800",
   });
 
+  const authHeaders = () => {
+    const token = localStorage.getItem("access_token");
+    const tokenType = localStorage.getItem("token_type") ?? "bearer";
+    return token ? { Authorization: `${tokenType} ${token}` } : null;
+  };
+
   const handleSave = async () => {
     setSavedMessage("Settings saved locally. Wire these controls to your backend when ready.");
+    setErrorMessage("");
   };
 
   const handleExportData = () => {
-    setSavedMessage("Export flow not implemented yet.");
+    setSavedMessage("");
+    setErrorMessage("Export flow not implemented yet.");
   };
 
-  const handleClearChats = () => {
-    setSavedMessage("Clear chat history is not implemented yet.");
+  const handleClearChats = async () => {
+    const confirmed = window.confirm("Clear your entire chat history? This cannot be undone.");
+    if (!confirmed) return;
+
+    const headers = authHeaders();
+    if (!headers) {
+      router.push("/login");
+      return;
+    }
+
+    setIsClearing(true);
+    setSavedMessage("");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch(`${apiBase}/chat/history`, {
+        method: "DELETE",
+        headers,
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("token_type");
+          router.push("/login");
+          return;
+        }
+        throw new Error(data?.detail ?? "Unable to clear chat history");
+      }
+
+      setSavedMessage("Chat history cleared successfully.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to clear chat history"
+      );
+    } finally {
+      setIsClearing(false);
+    }
   };
 
-  const handleDeleteAccount = () => {
-    setSavedMessage("Delete account is not implemented yet.");
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This will permanently delete your account, all documents, chat history, and cannot be undone."
+    );
+    if (!confirmed) return;
+
+    const doubleConfirmed = window.confirm(
+      "This is your last chance. Are you absolutely sure?"
+    );
+    if (!doubleConfirmed) return;
+
+    const headers = authHeaders();
+    if (!headers) {
+      router.push("/login");
+      return;
+    }
+
+    setIsDeleting(true);
+    setSavedMessage("");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch(`${apiBase}/auth/me`, {
+        method: "DELETE",
+        headers,
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("token_type");
+          router.push("/login");
+          return;
+        }
+        throw new Error(data?.detail ?? "Unable to delete account");
+      }
+
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("token_type");
+      router.push("/");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to delete account"
+      );
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const containerVariants = {
@@ -170,6 +270,15 @@ export default function SettingsPage() {
                 className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
               >
                 {savedMessage}
+              </motion.div>
+            )}
+
+            {errorMessage && (
+              <motion.div
+                variants={itemVariants}
+                className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-100"
+              >
+                {errorMessage}
               </motion.div>
             )}
 
@@ -315,19 +424,39 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={handleClearChats}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                    disabled={isClearing}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <Trash2 className="h-4 w-4" />
-                    Clear chat history
+                    {isClearing ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Clearing...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="h-4 w-4" />
+                        Clear chat history
+                      </>
+                    )}
                   </button>
 
                   <button
                     type="button"
                     onClick={handleDeleteAccount}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-100 transition hover:bg-red-500/20"
+                    disabled={isDeleting}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-100 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <Trash2 className="h-4 w-4" />
-                    Delete account
+                    {isDeleting ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="h-4 w-4" />
+                        Delete account
+                      </>
+                    )}
                   </button>
                 </div>
               </motion.section>

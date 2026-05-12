@@ -278,6 +278,15 @@ def update_me(
     db.refresh(current_user)
     return current_user
 
+@router.delete("/me")
+def delete_me(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    delete_user_data(db, current_user)
+    db.commit()
+    return {"message": "Your account and all associated data have been deleted."}
+
 @router.get("/admin/stats", response_model=schemas.AdminStatsResponse)
 def get_admin_stats(
     db: Session = Depends(get_db),

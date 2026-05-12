@@ -37,6 +37,3 @@ curl -X POST "http://localhost:8000/auth/dev-make-admin?email=email@gmail.com"
 
 Admin test
 smevtlz103@tormails.com
-
-6c08dd0a-dbf3-458a-931c-bb86e394444e
-XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
