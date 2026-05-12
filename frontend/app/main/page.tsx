@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -53,12 +54,56 @@ const items = [
 
 export default function AppHomePage() {
   const router = useRouter();
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const token = localStorage.getItem("access_token");
+      const tokenType = localStorage.getItem("token_type") ?? "bearer";
+
+      if (!token) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/auth/me`, {
+          headers: {
+            Authorization: `${tokenType} ${token}`,
+          },
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("token_type");
+            router.push("/login");
+            return;
+          }
+
+          setIsAdmin(false);
+          return;
+        }
+
+        setIsAdmin(Boolean(data?.is_admin));
+      } catch {
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdmin();
+  }, [apiBase, router]);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("token_type");
     router.push("/");
   };
+
+  const visibleItems = items.filter((item) => item.title !== "Admin" || isAdmin);
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
@@ -92,7 +137,7 @@ export default function AppHomePage() {
         </motion.div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {items.map((item, index) => {
+          {visibleItems.map((item, index) => {
             const Icon = item.icon;
 
             return (

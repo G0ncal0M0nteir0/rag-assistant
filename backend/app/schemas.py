@@ -24,6 +24,7 @@ class UserOut(BaseModel):
     id: UUID
     email: str
     is_verified: bool
+    is_admin: bool
     created_at: datetime
 
 class Token(BaseModel):
@@ -78,3 +79,21 @@ class AdminStatsResponse(BaseModel):
     total_documents: int
     total_tokens_consumed: int
     total_conversations: int
+
+class AdminUserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    email: str
+    is_verified: bool
+    is_admin: bool
+    created_at: datetime
+    document_count: int
+    conversation_count: int
+    message_count: int
+    token_usage_count: int
+
+class AdminDeleteManyResponse(BaseModel):
+    message: str
+    deleted_users: int
+    scope: str

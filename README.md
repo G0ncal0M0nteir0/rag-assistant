@@ -27,3 +27,12 @@ A multi-user RAG (Retrieval-Augmented Generation) system built with:
 frontend packages/libraris:
 npx shadcn@latest init
 npm install lucide-react framer-motion
+
+
+
+
+
+
+curl -X POST "http://localhost:8000/auth/dev-make-admin?email=email@gmail.com"
+
+nespujakke@necub.com
