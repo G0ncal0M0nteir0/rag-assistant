@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas
 from app.auth import hash_password, verify_password, create_access_token, get_current_user
-from app.services.email import send_verification_email, send_password_reset_email
+from app.services.email import send_verification_email, send_password_reset_email, send_security_alert_email
 from app.services.vectorstore import delete_document_chunks
 from datetime import datetime, timedelta, timezone
 from typing import Literal
@@ -257,13 +257,20 @@ def get_me(current_user: models.User = Depends(get_current_user)):
 @router.patch("/me", response_model=schemas.UserOut)
 def update_me(
     body: schemas.UserUpdate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    password_changed = False
+    email_changed = False
+    old_email = current_user.email
+
     if body.email:
         existing = db.query(models.User).filter(models.User.email == body.email).first()
         if existing and str(existing.id) != str(current_user.id):
             raise HTTPException(status_code=400, detail="Email already in use.")
+        if body.email != current_user.email:
+            email_changed = True
         current_user.email = body.email
 
     if body.full_name:
@@ -273,9 +280,36 @@ def update_me(
         if len(body.password) < 8:
             raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
         current_user.password = hash_password(body.password)
+        password_changed = True
+
+    if body.security_alerts_enabled is not None:
+        current_user.security_alerts_enabled = body.security_alerts_enabled
 
     db.commit()
     db.refresh(current_user)
+
+    # Send security alerts if changes were made and user has alerts enabled
+    if current_user.security_alerts_enabled:
+        if password_changed:
+            background_tasks.add_task(
+                send_security_alert_email,
+                email=current_user.email,
+                event_type="password_changed"
+            )
+        if email_changed:
+            # Send alert to old email about email change
+            background_tasks.add_task(
+                send_security_alert_email,
+                email=old_email,
+                event_type="email_changed"
+            )
+            # Send verification email to new email
+            background_tasks.add_task(
+                send_security_alert_email,
+                email=current_user.email,
+                event_type="email_changed"
+            )
+
     return current_user
 
 @router.delete("/me")

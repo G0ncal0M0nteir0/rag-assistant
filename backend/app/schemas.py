@@ -12,6 +12,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
     password: Optional[str] = None
+    security_alerts_enabled: Optional[bool] = None
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
@@ -28,6 +29,7 @@ class UserOut(BaseModel):
     full_name: Optional[str]
     is_verified: bool
     is_admin: bool
+    security_alerts_enabled: bool
     created_at: datetime
 
 class Token(BaseModel):

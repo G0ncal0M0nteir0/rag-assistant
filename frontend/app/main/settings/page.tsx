@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -21,9 +21,7 @@ import {
 } from "lucide-react";
 
 type SettingsState = {
-  emailNotifications: boolean;
   securityAlerts: boolean;
-  weeklyDigest: boolean;
   darkMode: boolean;
   autoIndexDocuments: boolean;
   citationsEnabled: boolean;
@@ -87,9 +85,7 @@ export default function SettingsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const [settings, setSettings] = useState<SettingsState>({
-    emailNotifications: true,
     securityAlerts: true,
-    weeklyDigest: false,
     darkMode: true,
     autoIndexDocuments: true,
     citationsEnabled: true,
@@ -107,14 +103,133 @@ export default function SettingsPage() {
     return token ? { Authorization: `${tokenType} ${token}` } : null;
   };
 
+  // Load user settings on component mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      const headers = authHeaders();
+      if (!headers) {
+        router.push("/login");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/auth/me`, {
+          headers,
+        });
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("token_type");
+            router.push("/login");
+          }
+          return;
+        }
+
+        const userData = await response.json();
+        setSettings((prev) => ({
+          ...prev,
+          securityAlerts: userData.security_alerts_enabled ?? true,
+        }));
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    };
+
+    loadSettings();
+  }, [apiBase, router]);
+
   const handleSave = async () => {
-    setSavedMessage("Settings saved locally. Wire these controls to your backend when ready.");
+    const headers = authHeaders();
+    if (!headers) {
+      router.push("/login");
+      return;
+    }
+
+    setSavedMessage("");
     setErrorMessage("");
+
+    try {
+      const response = await fetch(`${apiBase}/auth/me`, {
+        method: "PATCH",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          security_alerts_enabled: settings.securityAlerts,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("token_type");
+          router.push("/login");
+          return;
+        }
+        throw new Error(data?.detail ?? "Unable to save settings");
+      }
+
+      setSavedMessage("Settings saved successfully!");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to save settings"
+      );
+    }
   };
 
-  const handleExportData = () => {
+  const handleSecurityAlertsToggle = async (value: boolean) => {
+    const headers = authHeaders();
+    if (!headers) {
+      router.push("/login");
+      return;
+    }
+
+    const previousValue = settings.securityAlerts;
+    setSettings((prev) => ({ ...prev, securityAlerts: value }));
     setSavedMessage("");
-    setErrorMessage("Export flow not implemented yet.");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch(`${apiBase}/auth/me`, {
+        method: "PATCH",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          security_alerts_enabled: value,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("token_type");
+          router.push("/login");
+          return;
+        }
+        throw new Error(data?.detail ?? "Unable to update security alerts setting");
+      }
+
+      setSavedMessage(
+        value
+          ? "Security alerts enabled. You will receive alerts for password/email changes."
+          : "Security alerts disabled. You will no longer receive those alerts."
+      );
+    } catch (error) {
+      setSettings((prev) => ({ ...prev, securityAlerts: previousValue }));
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to update security alerts setting"
+      );
+    }
   };
 
   const handleClearChats = async () => {
@@ -285,37 +400,26 @@ export default function SettingsPage() {
             <div className="space-y-8">
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">Notifications</h2>
+                  <Zap className="h-5 w-5 text-cyan-300" />
+                  <h2 className="text-xl font-semibold">General</h2>
                 </div>
 
                 <div className="grid gap-4">
                   <ToggleRow
-                    title="Email notifications"
-                    description="Receive product and account updates by email."
-                    enabled={settings.emailNotifications}
+                    title="Dark mode"
+                    description="Use dark theme for the interface."
+                    enabled={settings.darkMode}
                     onChange={(value) =>
-                      setSettings((prev) => ({ ...prev, emailNotifications: value }))
+                      setSettings((prev) => ({ ...prev, darkMode: value }))
                     }
-                    icon={Bell}
+                    icon={Moon}
                   />
                   <ToggleRow
                     title="Security alerts"
                     description="Get notified when someone logs in or changes your account."
                     enabled={settings.securityAlerts}
-                    onChange={(value) =>
-                      setSettings((prev) => ({ ...prev, securityAlerts: value }))
-                    }
+                    onChange={handleSecurityAlertsToggle}
                     icon={Shield}
-                  />
-                  <ToggleRow
-                    title="Weekly digest"
-                    description="Receive a summary of activity and document updates once a week."
-                    enabled={settings.weeklyDigest}
-                    onChange={(value) =>
-                      setSettings((prev) => ({ ...prev, weeklyDigest: value }))
-                    }
-                    icon={Download}
                   />
                 </div>
               </motion.section>
@@ -412,15 +516,6 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="grid gap-4">
-                  <button
-                    type="button"
-                    onClick={handleExportData}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
-                  >
-                    <Download className="h-4 w-4" />
-                    Export data
-                  </button>
-
                   <button
                     type="button"
                     onClick={handleClearChats}
