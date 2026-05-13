@@ -36,4 +36,4 @@ npm install lucide-react framer-motion
 curl -X POST "http://localhost:8000/auth/dev-make-admin?email=email@gmail.com"
 
 Admin test
-smevtlz103@tormails.com
+xicira9155@ellbit.com

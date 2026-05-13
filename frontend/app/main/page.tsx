@@ -27,7 +27,7 @@ const items = [
     description: "Upload and manage your documents.",
     href: "/main/knowledge_base",
     icon: FileUp,
-    accent: "from-sky-500 to-blue-500",
+    accent: "from-amber-400 to-yellow-400",
   },
   {
     title: "Profile",
@@ -41,7 +41,7 @@ const items = [
     description: "Adjust your account and app preferences.",
     href: "/main/settings",
     icon: Settings,
-    accent: "from-indigo-500 to-violet-500",
+    accent: "from-violet-500 to-purple-600",
   },
   {
     title: "Admin",
@@ -103,15 +103,30 @@ export default function AppHomePage() {
     router.push("/");
   };
 
-  const visibleItems = items.filter((item) => item.title !== "Admin" || isAdmin);
+  // Always exclude the Admin card from the grid — admin access is shown
+  // as a centered shield icon in the header instead.
+  const visibleItems = items.filter((item) => item.title !== "Admin");
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="mb-6 flex items-center justify-between gap-4 relative">
           <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
             Ready to start RAGing?
           </span>
+
+          {isAdmin === true && (
+            <Link
+              href="/admin"
+              aria-label="Admin"
+              title="Admin"
+              className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10"
+            >
+              <div className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md">
+                <Shield className="h-5 w-5" />
+              </div>
+            </Link>
+          )}
 
           <button
             onClick={handleLogout}
