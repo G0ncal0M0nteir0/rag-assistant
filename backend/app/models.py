@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, String, DateTime, ForeignKey, Text, Integer
+from sqlalchemy import Boolean, Column, String, DateTime, ForeignKey, Text, Integer, Float
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -20,6 +20,10 @@ class User(Base):
     reset_token_expires     = Column(DateTime, nullable=True)
     is_admin                = Column(Boolean, default=False, nullable=False)
     security_alerts_enabled = Column(Boolean, default=True, nullable=False)
+    model                   = Column(String, default="llama-3.1-8b-instant", nullable=False)
+    temperature             = Column(Float, default=0.3, nullable=False)
+    top_k                   = Column(Integer, default=5, nullable=False)
+    chunk_size              = Column(Integer, default=800, nullable=False)
     created_at              = Column(DateTime, default=datetime.utcnow)
 
     documents   = relationship("Document", back_populates="owner")

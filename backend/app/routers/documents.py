@@ -137,7 +137,8 @@ def upload_document(
         chunk_count = store_document(
             doc_id=str(doc_record.id),
             user_id=str(current_user.id),
-            text=text
+            text=text,
+            chunk_size=current_user.chunk_size
         )
         doc_record.status = "ready"
         doc_record.chunk_count = chunk_count

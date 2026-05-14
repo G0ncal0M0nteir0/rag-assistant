@@ -193,6 +193,17 @@ class FakeDB:
                 row.is_verified = False
             if row.is_admin is None:
                 row.is_admin = False
+            # ensure new settings fields exist with defaults
+            if getattr(row, "security_alerts_enabled", None) is None:
+                row.security_alerts_enabled = True
+            if getattr(row, "model", None) is None:
+                row.model = "llama-3.1-8b-instant"
+            if getattr(row, "temperature", None) is None:
+                row.temperature = 0.3
+            if getattr(row, "top_k", None) is None:
+                row.top_k = 5
+            if getattr(row, "chunk_size", None) is None:
+                row.chunk_size = 800
 
         if isinstance(row, self.models.Document):
             if row.status is None:
@@ -235,10 +246,10 @@ def api_context(monkeypatch, tmp_path):
     service_stubs = SimpleNamespace(
         store_document=lambda **kwargs: 2,
         delete_document_chunks=lambda document_id: None,
-        retrieve_chunks=lambda query, user_id, k=8: ([], []),
+        retrieve_chunks=lambda query, user_id, k=8, initial_k=8: ([], []),
     )
     llm_stub = SimpleNamespace(
-        generate_answer=lambda question, context_chunks, history=None: {
+        generate_answer=lambda question, context_chunks, history=None, model=None, temperature=None: {
             "answer": f"Answer for: {question}",
             "prompt_tokens": 10,
             "answer_tokens": 5,

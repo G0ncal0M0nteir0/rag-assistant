@@ -18,7 +18,9 @@ GROQ_LIMITS = {
 def generate_answer(
     question: str,
     context_chunks: list[str],
-    history: list[dict] = []
+    history: list[dict] = [],
+    model: str = "llama-3.3-70b-versatile",
+    temperature: float = 0.2
 ) -> dict:
     if not context_chunks:
         return {
@@ -46,9 +48,9 @@ Context:
     messages.append({"role": "user", "content": question})
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=model,
         messages=messages,
-        temperature=0.2,
+        temperature=temperature,
         max_tokens=1000
     )
 

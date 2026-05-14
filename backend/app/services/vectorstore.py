@@ -11,9 +11,9 @@ def get_collection():
         metadata={"hnsw:space": "cosine"}
     )
 
-def store_document(doc_id: str, user_id: str, text: str) -> int:
+def store_document(doc_id: str, user_id: str, text: str, chunk_size: int = 800) -> int:
     collection = get_collection()
-    chunks = chunk_text(text)
+    chunks = chunk_text(text, max_chunk_size=chunk_size)
 
     if not chunks:
         return 0
@@ -109,9 +109,9 @@ def reciprocal_rank_fusion(
     sorted_keys = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)
     return [chunk_map[key] for key in sorted_keys]
 
-def retrieve_chunks(query: str, user_id: str, k: int = 4) -> Tuple[List[str], List[str]]:
-    semantic_results = semantic_search(query, user_id, k=6)
-    keyword_results = keyword_search(query, user_id, k=6)
+def retrieve_chunks(query: str, user_id: str, k: int = 4, initial_k: int = 6) -> Tuple[List[str], List[str]]:
+    semantic_results = semantic_search(query, user_id, k=initial_k)
+    keyword_results = keyword_search(query, user_id, k=initial_k)
 
     if not semantic_results and not keyword_results:
         return [], []

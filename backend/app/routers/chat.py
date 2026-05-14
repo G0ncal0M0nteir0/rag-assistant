@@ -43,14 +43,15 @@ async def ask(
     chunks, doc_ids = retrieve_chunks(
         query=body.question,
         user_id=str(current_user.id),
-        k=8
+        k=current_user.top_k,
+        initial_k=current_user.top_k + 1
     )
 
     chunks, doc_ids = rerank(
         query=body.question,
         chunks=chunks,
         doc_ids=doc_ids,
-        top_k=4
+        top_k=current_user.top_k
     )
 
     sources = []
@@ -76,7 +77,9 @@ async def ask(
     result = generate_answer(
         question=body.question,
         context_chunks=chunks,
-        history=history
+        history=history,
+        model=current_user.model,
+        temperature=current_user.temperature
     )
 
     message = models.ChatMessage(

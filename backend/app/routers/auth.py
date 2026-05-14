@@ -285,6 +285,18 @@ def update_me(
     if body.security_alerts_enabled is not None:
         current_user.security_alerts_enabled = body.security_alerts_enabled
 
+    if body.model is not None:
+        current_user.model = body.model
+
+    if body.temperature is not None:
+        current_user.temperature = body.temperature
+
+    if body.top_k is not None:
+        current_user.top_k = body.top_k
+
+    if body.chunk_size is not None:
+        current_user.chunk_size = body.chunk_size
+
     db.commit()
     db.refresh(current_user)
 

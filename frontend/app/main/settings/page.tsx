@@ -26,7 +26,6 @@ type SettingsState = {
   autoIndexDocuments: boolean;
   citationsEnabled: boolean;
   autoSaveChats: boolean;
-  responseTone: string;
   model: string;
   temperature: string;
   topK: string;
@@ -90,7 +89,6 @@ export default function SettingsPage() {
     autoIndexDocuments: true,
     citationsEnabled: true,
     autoSaveChats: true,
-    responseTone: "balanced",
     model: "llama-3.1-8b-instant",
     temperature: "0.3",
     topK: "5",
@@ -130,6 +128,10 @@ export default function SettingsPage() {
         setSettings((prev) => ({
           ...prev,
           securityAlerts: userData.security_alerts_enabled ?? true,
+          model: userData.model ?? "llama-3.1-8b-instant",
+          temperature: userData.temperature?.toString() ?? "0.3",
+          topK: userData.top_k?.toString() ?? "5",
+          chunkSize: userData.chunk_size?.toString() ?? "800",
         }));
       } catch (error) {
         console.error("Failed to load settings:", error);
@@ -158,6 +160,10 @@ export default function SettingsPage() {
         },
         body: JSON.stringify({
           security_alerts_enabled: settings.securityAlerts,
+          model: settings.model,
+          temperature: parseFloat(settings.temperature),
+          top_k: parseInt(settings.topK),
+          chunk_size: parseInt(settings.chunkSize),
         }),
       });
 
@@ -448,22 +454,7 @@ export default function SettingsPage() {
                     </select>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
-                      Response tone
-                    </label>
-                    <select
-                      value={settings.responseTone}
-                      onChange={(e) =>
-                        setSettings((prev) => ({ ...prev, responseTone: e.target.value }))
-                      }
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
-                    >
-                      <option value="balanced">Balanced</option>
-                      <option value="concise">Concise</option>
-                      <option value="detailed">Detailed</option>
-                    </select>
-                  </div>
+                  {/* Response tone removed: not implemented in backend */}
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <label className="mb-2 block text-sm font-medium text-slate-200">

@@ -13,7 +13,7 @@ def get_embedding(text: str) -> List[float]:
 def get_embeddings(texts: List[str]) -> List[List[float]]:
     return model.encode(texts).tolist()
 
-def chunk_text(text: str, max_words: int = 100, overlap_sentences: int = 1) -> List[str]:
+def chunk_text(text: str, max_chunk_size: int = 800, overlap_sentences: int = 1) -> List[str]:
     sentences = nltk.sent_tokenize(text)
 
     if not sentences:
@@ -21,18 +21,18 @@ def chunk_text(text: str, max_words: int = 100, overlap_sentences: int = 1) -> L
 
     chunks = []
     current_chunk = []
-    current_word_count = 0
+    current_size = 0
 
     for i, sentence in enumerate(sentences):
-        word_count = len(sentence.split())
+        sentence_size = len(sentence)
 
-        if current_word_count + word_count > max_words and current_chunk:
+        if current_size + sentence_size > max_chunk_size and current_chunk:
             chunks.append(" ".join(current_chunk))
             current_chunk = current_chunk[-overlap_sentences:]
-            current_word_count = sum(len(s.split()) for s in current_chunk)
+            current_size = sum(len(s) for s in current_chunk)
 
         current_chunk.append(sentence)
-        current_word_count += word_count
+        current_size += sentence_size
 
     if current_chunk:
         chunks.append(" ".join(current_chunk))
