@@ -13,6 +13,7 @@ class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     password: Optional[str] = None
     security_alerts_enabled: Optional[bool] = None
+    dark_mode: Optional[bool] = None
     model: Optional[str] = None
     temperature: Optional[float] = None
     top_k: Optional[int] = None
@@ -34,6 +35,7 @@ class UserOut(BaseModel):
     is_verified: bool
     is_admin: bool
     security_alerts_enabled: bool
+    dark_mode: bool
     model: str
     temperature: float
     top_k: int

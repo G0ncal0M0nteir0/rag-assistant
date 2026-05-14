@@ -140,3 +140,28 @@ def test_document_upload_uses_chunk_size(api_context, monkeypatch):
     assert response.status_code == 200
     assert captured["chunk_size"] == 123
     assert response.json()["chunk_count"] == 4
+
+
+def test_dark_mode_is_persisted_via_profile_update(api_context):
+    # Test setting dark_mode to False (light mode)
+    response = api_context.client.patch(
+        "/auth/me",
+        headers=auth_header(api_context.user),
+        json={"dark_mode": False},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["dark_mode"] is False
+    assert api_context.user.dark_mode is False
+
+    # Test setting dark_mode back to True (dark mode)
+    response = api_context.client.patch(
+        "/auth/me",
+        headers=auth_header(api_context.user),
+        json={"dark_mode": True},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["dark_mode"] is True
+    assert api_context.user.dark_mode is True
+

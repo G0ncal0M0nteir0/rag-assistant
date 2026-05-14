@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Settings,
   Shield,
+  Sparkles,
   User,
 } from "lucide-react";
 
@@ -108,12 +109,16 @@ export default function AppHomePage() {
   const visibleItems = items.filter((item) => item.title !== "Admin");
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-slate-900 dark:text-white">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex items-center justify-between gap-4 relative">
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
-            Ready to start RAGing?
-          </span>
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-600/20 dark:border-cyan-400/20 bg-cyan-100 dark:bg-cyan-400/10 px-3 py-1 text-xs text-cyan-700 dark:text-cyan-200">
+              <Sparkles className="h-3.5 w-3.5" />
+              Dashboard
+            </span>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Ready to start RAGing?</h1>
+          </div>
 
           {isAdmin === true && (
             <Link
@@ -130,7 +135,7 @@ export default function AppHomePage() {
 
           <button
             onClick={handleLogout}
-            className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 backdrop-blur-md transition hover:bg-red-500/20 hover:text-red-100"
+            className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-200 backdrop-blur-md transition hover:bg-red-500/20 hover:text-red-700 dark:hover:text-red-100"
           >
             <LogOut className="h-4 w-4 text-red-400" />
             Logout
@@ -143,10 +148,10 @@ export default function AppHomePage() {
           transition={{ duration: 0.5 }}
           className="mb-10"
         >
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">
             Welcome to your workspace
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
             Choose what you want to do next: chat with the assistant, upload documents, or manage your account.
           </p>
         </motion.div>
@@ -161,15 +166,15 @@ export default function AppHomePage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.06 }}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl"
+                className="group relative overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-2xl shadow-slate-200/50 dark:shadow-black/30 backdrop-blur-xl"
               >
                 <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accent}`} />
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
-                  <Icon className="h-6 w-6 text-white" />
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-200 dark:bg-white/10">
+                  <Icon className="h-6 w-6 text-slate-900 dark:text-white" />
                 </div>
 
-                <h2 className="text-xl font-semibold">{item.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{item.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{item.description}</p>
 
                 <Link
                   href={item.href}

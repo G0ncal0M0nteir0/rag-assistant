@@ -196,6 +196,8 @@ class FakeDB:
             # ensure new settings fields exist with defaults
             if getattr(row, "security_alerts_enabled", None) is None:
                 row.security_alerts_enabled = True
+            if getattr(row, "dark_mode", None) is None:
+                row.dark_mode = True
             if getattr(row, "model", None) is None:
                 row.model = "llama-3.1-8b-instant"
             if getattr(row, "temperature", None) is None:

@@ -202,7 +202,7 @@ export default function ProfilePage() {
     : "";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-slate-900 dark:text-white">
       <div className="mx-auto max-w-4xl">
         <motion.div
           initial="hidden"
@@ -215,25 +215,25 @@ export default function ProfilePage() {
 
           <motion.div
             variants={itemVariants}
-            className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur-xl"
+            className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 shadow-2xl shadow-slate-200/50 dark:shadow-black/40 backdrop-blur-xl"
           >
             <div className="mb-8 flex items-center justify-between gap-4">
-              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
+              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-600/20 dark:border-cyan-400/20 bg-cyan-100 dark:bg-cyan-400/10 px-3 py-1 text-xs text-cyan-700 dark:text-cyan-200">
                 <Sparkles className="h-3.5 w-3.5" />
                 Profile
               </span>
 
               <Link
                 href="/main"
-                className="text-sm text-cyan-300 transition hover:text-cyan-200"
+                className="text-sm text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-700 dark:hover:text-cyan-200"
               >
                 Back to workspace
               </Link>
             </div>
 
             <div className="mb-8">
-              <h1 className="text-3xl font-semibold tracking-tight">Your profile</h1>
-              <p className="mt-3 text-sm leading-6 text-slate-400">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Your profile</h1>
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 View and update your account information.
               </p>
             </div>
@@ -245,16 +245,16 @@ export default function ProfilePage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <motion.div variants={itemVariants} className="grid gap-5 md:grid-cols-2">
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-5">
                     <div className="mb-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-slate-300">
-                        <User className="h-4 w-4 text-cyan-300" />
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        <User className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                         <span className="text-sm font-medium">Account ID</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setShowId(!showId)}
-                        className="rounded-lg bg-cyan-500/20 p-1.5 text-cyan-300 transition hover:bg-cyan-500/30"
+                        className="rounded-lg bg-cyan-600/20 dark:bg-cyan-500/20 p-1.5 text-cyan-600 dark:text-cyan-300 transition hover:bg-cyan-600/30 dark:hover:bg-cyan-500/30"
                         title={showId ? "Hide ID" : "Show ID"}
                       >
                         {showId ? (
@@ -264,8 +264,8 @@ export default function ProfilePage() {
                         )}
                       </button>
                     </div>
-                    <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
-                      <p className="flex-1 break-all text-xs text-slate-400 font-mono">
+                    <div className="mt-3 flex items-center gap-2 rounded-lg border border-slate-300 dark:border-white/10 bg-slate-200 dark:bg-white/5 px-3 py-2">
+                      <p className="flex-1 break-all text-xs text-slate-700 dark:text-slate-400 font-mono">
                         {showId ? profile?.id : "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"}
                       </p>
                       {showId && (
@@ -276,7 +276,7 @@ export default function ProfilePage() {
                               navigator.clipboard.writeText(profile.id);
                             }
                           }}
-                          className="ml-2 text-xs text-cyan-300 transition hover:text-cyan-200"
+                          className="ml-2 text-xs text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-700 dark:hover:text-cyan-200"
                         >
                           Copy
                         </button>
@@ -284,80 +284,80 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <div className="mb-2 flex items-center gap-2 text-slate-300">
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-5">
+                    <div className="mb-2 flex items-center gap-2 text-slate-700 dark:text-slate-300">
                       <CheckCircle2
                         className={`h-4 w-4 ${
-                          profile?.is_verified ? "text-emerald-400" : "text-amber-400"
+                          profile?.is_verified ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
                         }`}
                       />
                       <span className="text-sm font-medium">Verification</span>
                     </div>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
                       {profile?.is_verified ? "Verified" : "Not verified"}
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <div className="mb-2 flex items-center gap-2 text-slate-300">
-                      <User className="h-4 w-4 text-cyan-300" />
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-5">
+                    <div className="mb-2 flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <User className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                       <span className="text-sm font-medium">Full Name</span>
                     </div>
                     <input
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <div className="mb-2 flex items-center gap-2 text-slate-300">
-                      <Mail className="h-4 w-4 text-cyan-300" />
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-5">
+                    <div className="mb-2 flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <Mail className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                       <span className="text-sm font-medium">Email</span>
                     </div>
                     <input
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
-                  <div className="flex items-center gap-2 text-slate-300">
-                    <Lock className="h-4 w-4 text-cyan-300" />
+                <motion.div variants={itemVariants} className="space-y-4 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-5">
+                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                    <Lock className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                     <span className="text-sm font-medium">Change password</span>
                   </div>
 
                   <div>
-                    <div className="mb-2 flex items-center gap-2 text-slate-300">
-                      <Lock className="h-4 w-4 text-cyan-300" />
+                    <div className="mb-2 flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <Lock className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                       <span className="text-sm font-medium">Password</span>
                     </div>
                     <input
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
 
                   <div>
-                    <div className="mb-2 flex items-center gap-2 text-slate-300">
-                      <Lock className="h-4 w-4 text-cyan-300" />
+                    <div className="mb-2 flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <Lock className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                       <span className="text-sm font-medium">Confirm Password</span>
                     </div>
                     <input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
                 </motion.div>
 
                 {error && (
-                  <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                  <div className="rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-100">
                     <div className="flex items-start gap-3">
                       <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
                       <p>{error}</p>
@@ -366,7 +366,7 @@ export default function ProfilePage() {
                 )}
 
                 {message && (
-                  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                  <div className="rounded-2xl border border-emerald-600/20 dark:border-emerald-500/20 bg-emerald-100 dark:bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-100">
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
                       <p>{message}</p>
@@ -378,7 +378,7 @@ export default function ProfilePage() {
                   variants={itemVariants}
                   type="submit"
                   disabled={saving}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-sky-500 px-5 py-3.5 font-semibold text-slate-950 transition hover:from-cyan-400 hover:to-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-sky-500 px-5 py-3.5 font-semibold text-white dark:text-slate-950 transition hover:from-cyan-400 hover:to-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -390,7 +390,7 @@ export default function ProfilePage() {
 
                 <motion.p
                   variants={itemVariants}
-                  className="text-center text-xs text-slate-500"
+                  className="text-center text-xs text-slate-600 dark:text-slate-500"
                 >
                   Joined {formattedCreatedAt}
                 </motion.p>

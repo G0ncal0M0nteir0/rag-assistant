@@ -309,14 +309,14 @@ export default function AdminPage() {
   const canBulkDelete = bulkDeleteConfirm === "DELETE_ALL";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-slate-900 dark:text-white">
       {checking ? (
         <div className="flex min-h-screen items-center justify-center">
           <Loader2 className="h-10 w-10 animate-spin text-cyan-400" />
         </div>
       ) : !isAdmin ? (
         <div className="flex min-h-screen items-center justify-center">
-          <div className="text-center text-slate-400">
+          <div className="text-center text-slate-600 dark:text-slate-400">
             <p>You do not have admin access.</p>
           </div>
         </div>
@@ -333,17 +333,17 @@ export default function AdminPage() {
 
           <motion.div
             variants={itemVariants}
-            className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur-xl"
+            className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 shadow-2xl shadow-slate-200/50 dark:shadow-black/40 backdrop-blur-xl"
           >
             <div className="mb-8 flex items-center justify-between gap-4">
-              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs text-amber-200">
+              <span className="inline-flex items-center gap-2 rounded-full border border-amber-600/20 dark:border-amber-400/20 bg-amber-100 dark:bg-amber-400/10 px-3 py-1 text-xs text-amber-700 dark:text-amber-200">
                 <Shield className="h-3.5 w-3.5" />
                 Admin Dashboard
               </span>
 
               <Link
                 href="/main"
-                className="inline-flex items-center gap-2 text-sm text-cyan-300 transition hover:text-cyan-200"
+                className="inline-flex items-center gap-2 text-sm text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-700 dark:hover:text-cyan-200"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to workspace
@@ -351,10 +351,10 @@ export default function AdminPage() {
             </div>
 
             <div className="mb-8 max-w-3xl">
-              <h1 className="text-3xl font-semibold tracking-tight">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
                 User Management
               </h1>
-              <p className="mt-3 text-sm leading-6 text-slate-400">
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 View system statistics, manage user accounts, and perform bulk
                 operations. Delete individual users or purge multiple accounts
                 at once.
@@ -364,7 +364,7 @@ export default function AdminPage() {
             {error && (
               <motion.div
                 variants={itemVariants}
-                className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-100"
+                className="mb-6 rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-100"
               >
                 {error}
               </motion.div>
@@ -373,7 +373,7 @@ export default function AdminPage() {
             {message && (
               <motion.div
                 variants={itemVariants}
-                className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
+                className="mb-6 rounded-2xl border border-emerald-600/20 dark:border-emerald-500/20 bg-emerald-100 dark:bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-100"
               >
                 {message}
               </motion.div>
@@ -383,50 +383,50 @@ export default function AdminPage() {
               variants={itemVariants}
               className="mb-8 grid gap-4 md:grid-cols-4"
             >
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-cyan-300" />
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                  <Users className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-600 dark:text-slate-500">
                     Total Users
                   </div>
                 </div>
-                <div className="mt-3 text-2xl font-semibold">
+                <div className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">
                   {stats?.total_users ?? 0}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-emerald-300" />
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                  <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-600 dark:text-slate-500">
                     Documents
                   </div>
                 </div>
-                <div className="mt-3 text-2xl font-semibold">
+                <div className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">
                   {stats?.total_documents ?? 0}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-violet-300" />
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                  <MessageSquare className="h-4 w-4 text-violet-600 dark:text-violet-300" />
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-600 dark:text-slate-500">
                     Conversations
                   </div>
                 </div>
-                <div className="mt-3 text-2xl font-semibold">
+                <div className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">
                   {stats?.total_conversations ?? 0}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
                 <div className="flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-amber-300" />
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                  <Zap className="h-4 w-4 text-amber-600 dark:text-amber-300" />
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-600 dark:text-slate-500">
                     Tokens Used
                   </div>
                 </div>
-                <div className="mt-3 text-2xl font-semibold">
+                <div className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">
                   {(stats?.total_tokens_consumed ?? 0).toLocaleString()}
                 </div>
               </div>
@@ -436,21 +436,21 @@ export default function AdminPage() {
               variants={itemVariants}
               className="mb-6 grid gap-4 md:grid-cols-3"
             >
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div className="text-xs text-slate-500">Verified Users</div>
-                <div className="mt-2 text-xl font-semibold">
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                <div className="text-xs text-slate-600 dark:text-slate-500">Verified Users</div>
+                <div className="mt-2 text-xl font-semibold text-slate-900 dark:text-white">
                   {totalVerifiedUsers}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div className="text-xs text-slate-500">Admin Users</div>
-                <div className="mt-2 text-xl font-semibold">{totalAdminUsers}</div>
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                <div className="text-xs text-slate-600 dark:text-slate-500">Admin Users</div>
+                <div className="mt-2 text-xl font-semibold text-slate-900 dark:text-white">{totalAdminUsers}</div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div className="text-xs text-slate-500">Regular Users</div>
-                <div className="mt-2 text-xl font-semibold">
+              <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                <div className="text-xs text-slate-600 dark:text-slate-500">Regular Users</div>
+                <div className="mt-2 text-xl font-semibold text-slate-900 dark:text-white">
                   {(stats?.total_users ?? 0) - totalAdminUsers}
                 </div>
               </div>
@@ -460,8 +460,8 @@ export default function AdminPage() {
               variants={itemVariants}
               className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="flex items-center gap-2 text-slate-300">
-                <Users className="h-4 w-4 text-cyan-300" />
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <Users className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
                 <span className="text-sm font-medium">
                   User Accounts ({users.length})
                 </span>
@@ -471,7 +471,7 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={loadAdminData}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 transition hover:bg-slate-200 dark:hover:bg-white/10"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Refresh
@@ -480,7 +480,7 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={() => setShowBulkDeleteModal(true)}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/20"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-2 text-sm font-medium text-red-700 dark:text-red-100 transition hover:bg-red-200 dark:hover:bg-red-500/20"
                 >
                   <Trash2 className="h-4 w-4" />
                   Bulk Delete
@@ -495,7 +495,7 @@ export default function AdminPage() {
             ) : users.length === 0 ? (
               <motion.div
                 variants={itemVariants}
-                className="rounded-3xl border border-dashed border-white/10 bg-black/20 px-6 py-12 text-center text-sm text-slate-400"
+                className="rounded-3xl border border-dashed border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 px-6 py-12 text-center text-sm text-slate-600 dark:text-slate-400"
               >
                 No users found in the system.
               </motion.div>
@@ -505,32 +505,32 @@ export default function AdminPage() {
                   <motion.div
                     key={user.id}
                     variants={itemVariants}
-                    className="rounded-3xl border border-white/10 bg-black/20 p-5 shadow-lg shadow-black/20"
+                    className="rounded-3xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-5 shadow-lg shadow-slate-200/20 dark:shadow-black/20"
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="text-lg font-semibold">{user.email}</h2>
+                          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{user.email}</h2>
                           {user.is_admin && (
-                            <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-2 py-0.5 text-xs text-amber-200">
+                            <span className="rounded-full border border-amber-600/20 dark:border-amber-400/20 bg-amber-100 dark:bg-amber-400/10 px-2 py-0.5 text-xs text-amber-700 dark:text-amber-200">
                               Admin
                             </span>
                           )}
                           {user.is_verified ? (
-                            <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 text-xs text-emerald-200">
+                            <span className="rounded-full border border-emerald-600/20 dark:border-emerald-400/20 bg-emerald-100 dark:bg-emerald-400/10 px-2 py-0.5 text-xs text-emerald-700 dark:text-emerald-200">
                               Verified
                             </span>
                           ) : (
-                            <span className="rounded-full border border-slate-400/20 bg-slate-400/10 px-2 py-0.5 text-xs text-slate-200">
+                            <span className="rounded-full border border-slate-400/20 bg-slate-200 dark:bg-slate-400/10 px-2 py-0.5 text-xs text-slate-700 dark:text-slate-200">
                               Unverified
                             </span>
                           )}
                         </div>
 
-                        <p className="mt-2 break-all text-xs text-slate-500">
+                        <p className="mt-2 break-all text-xs text-slate-600 dark:text-slate-500">
                           ID: {user.id}
                         </p>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                           Created{" "}
                           {new Date(user.created_at).toLocaleString()}
                         </p>
@@ -541,7 +541,7 @@ export default function AdminPage() {
                           type="button"
                           onClick={() => handleDeleteUser(user)}
                           disabled={deletingId === user.id}
-                          className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex items-center gap-2 rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-2 text-sm font-medium text-red-700 dark:text-red-100 transition hover:bg-red-200 dark:hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {deletingId === user.id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -600,15 +600,15 @@ export default function AdminPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950/95 p-6 shadow-2xl"
+            className="w-full max-w-md rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-950/95 p-6 shadow-2xl shadow-slate-200/50 dark:shadow-black/50"
           >
             <div className="mb-4 flex items-start gap-3">
-              <AlertCircle className="h-6 w-6 flex-shrink-0 text-red-400" />
+              <AlertCircle className="h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" />
               <div>
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
                   Bulk Delete Users
                 </h2>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                   This operation will permanently delete selected users and all
                   their data. This action cannot be undone.
                 </p>
@@ -617,7 +617,7 @@ export default function AdminPage() {
 
             <div className="mb-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                   Delete Scope
                 </label>
                 <select
@@ -625,7 +625,7 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setBulkDeleteScope(e.target.value as "non_admins" | "all")
                   }
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-amber-400/50 focus:ring-2 focus:ring-amber-400/20"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-amber-400/50 focus:ring-2 focus:ring-amber-400/20"
                 >
                   <option value="non_admins">
                     Non-admin Users (recommended)
@@ -635,7 +635,7 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                   Confirmation
                 </label>
                 <input
@@ -643,7 +643,7 @@ export default function AdminPage() {
                   value={bulkDeleteConfirm}
                   onChange={(e) => setBulkDeleteConfirm(e.target.value)}
                   placeholder='Type "DELETE_ALL" to confirm'
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-amber-400/50 focus:ring-2 focus:ring-amber-400/20"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-600 focus:border-amber-400/50 focus:ring-2 focus:ring-amber-400/20"
                 />
               </div>
             </div>
@@ -655,7 +655,7 @@ export default function AdminPage() {
                   setShowBulkDeleteModal(false);
                   setBulkDeleteConfirm("");
                 }}
-                className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-medium text-white transition hover:bg-white/10"
+                className="flex-1 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 font-medium text-slate-700 dark:text-white transition hover:bg-slate-200 dark:hover:bg-white/10"
               >
                 Cancel
               </button>
@@ -664,7 +664,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={handleBulkDelete}
                 disabled={!canBulkDelete || bulkDeleting}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-medium text-red-100 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-3 font-medium text-red-700 dark:text-red-100 transition hover:bg-red-200 dark:hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {bulkDeleting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

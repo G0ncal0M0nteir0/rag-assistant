@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTheme } from "@/components/ThemeProvider";
 import {
   Bell,
   Bot,
@@ -22,7 +23,6 @@ import {
 
 type SettingsState = {
   securityAlerts: boolean;
-  darkMode: boolean;
   autoIndexDocuments: boolean;
   citationsEnabled: boolean;
   autoSaveChats: boolean;
@@ -46,14 +46,14 @@ function ToggleRow({
   icon: React.ComponentType<{ className?: string }>;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+    <div className="flex items-start justify-between gap-4 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
       <div className="flex items-start gap-3">
-        <div className="mt-0.5 rounded-xl bg-white/10 p-2">
-          <Icon className="h-5 w-5 text-cyan-300" />
+        <div className="mt-0.5 rounded-xl bg-slate-200 dark:bg-white/10 p-2">
+          <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
         </div>
         <div>
-          <h3 className="text-sm font-medium text-white">{title}</h3>
-          <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p>
+          <h3 className="text-sm font-medium text-slate-900 dark:text-white">{title}</h3>
+          <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ function ToggleRow({
         type="button"
         onClick={() => onChange(!enabled)}
         className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${
-          enabled ? "bg-cyan-500" : "bg-slate-600"
+          enabled ? "bg-cyan-500" : "bg-slate-400 dark:bg-slate-600"
         }`}
         aria-pressed={enabled}
       >
@@ -78,6 +78,7 @@ function ToggleRow({
 export default function SettingsPage() {
   const router = useRouter();
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  const { theme, toggle: toggleTheme } = useTheme();
 
   const [savedMessage, setSavedMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -85,7 +86,6 @@ export default function SettingsPage() {
   const [isClearing, setIsClearing] = useState(false);
   const [settings, setSettings] = useState<SettingsState>({
     securityAlerts: true,
-    darkMode: true,
     autoIndexDocuments: true,
     citationsEnabled: true,
     autoSaveChats: true,
@@ -349,7 +349,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-slate-900 dark:text-white">
       <div className="mx-auto max-w-6xl">
         <motion.div
           initial="hidden"
@@ -362,25 +362,25 @@ export default function SettingsPage() {
 
           <motion.div
             variants={itemVariants}
-            className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur-xl"
+            className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 shadow-2xl shadow-slate-200/50 dark:shadow-black/40 backdrop-blur-xl"
           >
             <div className="mb-8 flex items-center justify-between gap-4">
-              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
+              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-600/20 dark:border-cyan-400/20 bg-cyan-100 dark:bg-cyan-400/10 px-3 py-1 text-xs text-cyan-700 dark:text-cyan-200">
                 <Sparkles className="h-3.5 w-3.5" />
                 Settings
               </span>
 
               <Link
                 href="/main"
-                className="text-sm text-cyan-300 transition hover:text-cyan-200"
+                className="text-sm text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-700 dark:hover:text-cyan-200"
               >
                 Back to workspace
               </Link>
             </div>
 
             <div className="mb-8">
-              <h1 className="text-3xl font-semibold tracking-tight">Account settings</h1>
-              <p className="mt-3 text-sm leading-6 text-slate-400">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Account settings</h1>
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 Adjust your preferences for chat, documents, privacy, and notifications.
               </p>
             </div>
@@ -388,7 +388,7 @@ export default function SettingsPage() {
             {savedMessage && (
               <motion.div
                 variants={itemVariants}
-                className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
+                className="mb-6 rounded-2xl border border-emerald-600/20 dark:border-emerald-500/20 bg-emerald-100 dark:bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-100"
               >
                 {savedMessage}
               </motion.div>
@@ -397,7 +397,7 @@ export default function SettingsPage() {
             {errorMessage && (
               <motion.div
                 variants={itemVariants}
-                className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-100"
+                className="mb-6 rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-100"
               >
                 {errorMessage}
               </motion.div>
@@ -406,18 +406,16 @@ export default function SettingsPage() {
             <div className="space-y-8">
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">General</h2>
+                  <Zap className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">General</h2>
                 </div>
 
                 <div className="grid gap-4">
                   <ToggleRow
                     title="Dark mode"
                     description="Use dark theme for the interface."
-                    enabled={settings.darkMode}
-                    onChange={(value) =>
-                      setSettings((prev) => ({ ...prev, darkMode: value }))
-                    }
+                    enabled={theme === "dark"}
+                    onChange={() => toggleTheme()}
                     icon={Moon}
                   />
                   <ToggleRow
@@ -432,13 +430,13 @@ export default function SettingsPage() {
 
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Bot className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">Chat behavior</h2>
+                  <Bot className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Chat behavior</h2>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
                       Preferred model
                     </label>
                     <select
@@ -446,7 +444,7 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, model: e.target.value }))
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     >
                       <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
                       <option value="llama-3.1-70b-versatile">llama-3.1-70b-versatile</option>
@@ -456,8 +454,8 @@ export default function SettingsPage() {
 
                   {/* Response tone removed: not implemented in backend */}
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
                       Temperature
                     </label>
                     <input
@@ -466,12 +464,12 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, temperature: e.target.value }))
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
                       Top K
                     </label>
                     <input
@@ -480,12 +478,12 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, topK: e.target.value }))
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <div className="rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-4">
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
                       Chunk size
                     </label>
                     <input
@@ -494,7 +492,7 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setSettings((prev) => ({ ...prev, chunkSize: e.target.value }))
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-black/20 px-4 py-3 text-slate-900 dark:text-white outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
                 </div>
@@ -502,8 +500,8 @@ export default function SettingsPage() {
 
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Database className="h-5 w-5 text-cyan-300" />
-                  <h2 className="text-xl font-semibold">Data & Privacy</h2>
+                  <Database className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Data & Privacy</h2>
                 </div>
 
                 <div className="grid gap-4">
@@ -511,7 +509,7 @@ export default function SettingsPage() {
                     type="button"
                     onClick={handleClearChats}
                     disabled={isClearing}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 px-4 py-3 text-sm font-medium text-slate-900 dark:text-white transition hover:bg-slate-200 dark:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isClearing ? (
                       <>
@@ -530,7 +528,7 @@ export default function SettingsPage() {
                     type="button"
                     onClick={handleDeleteAccount}
                     disabled={isDeleting}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-100 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-red-600/20 dark:border-red-500/20 bg-red-100 dark:bg-red-500/10 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-100 transition hover:bg-red-200 dark:hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isDeleting ? (
                       <>
@@ -551,13 +549,13 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.02]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-semibold text-white dark:text-slate-950 transition hover:scale-[1.02]"
                 >
                   <Save className="h-4 w-4" />
                   Save settings
                 </button>
 
-                <Link href="/main" className="text-sm text-cyan-300 transition hover:text-cyan-200">
+                <Link href="/main" className="text-sm text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-700 dark:hover:text-cyan-200">
                   Back to workspace
                 </Link>
               </motion.div>

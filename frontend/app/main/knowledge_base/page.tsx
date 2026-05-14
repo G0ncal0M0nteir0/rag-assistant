@@ -238,7 +238,7 @@ export default function KnowledgeBasePage() {
 	};
 
 	return (
-		<main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-white">
+		<main className="min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_#09090b_0%,_#111827_48%,_#020617_100%)] px-4 py-10 text-slate-900 dark:text-white">
 			<div className="mx-auto max-w-7xl">
 				<motion.div
 					initial="hidden"
@@ -251,7 +251,7 @@ export default function KnowledgeBasePage() {
 
 					<motion.div
 						variants={itemVariants}
-						className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur-xl"
+						className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 shadow-2xl shadow-slate-200/50 dark:shadow-black/40 backdrop-blur-xl"
 					>
 						<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 							<div className="flex items-center gap-3">
@@ -266,7 +266,7 @@ export default function KnowledgeBasePage() {
 
 							<Link
 								href="/main"
-								className="inline-flex items-center gap-2 text-sm text-cyan-300 transition hover:text-cyan-200"
+							className="inline-flex items-center gap-2 text-sm text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-700 dark:hover:text-cyan-200"
 							>
 								<ArrowLeft className="h-4 w-4" />
 								Back to workspace
@@ -274,17 +274,17 @@ export default function KnowledgeBasePage() {
 						</div>
 
 						<div className="mb-8 max-w-3xl">
-							<h1 className="text-3xl font-semibold tracking-tight">Knowledge Base</h1>
-							<p className="mt-3 text-sm leading-6 text-slate-400">
+						<h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Knowledge Base</h1>
+						<p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
 								Upload files, review stored documents, and delete anything you no longer need.
 							</p>
 						</div>
 
 						<div className="grid gap-6 lg:grid-cols-[1.05fr_1.4fr]">
-							<motion.section variants={itemVariants} className="rounded-3xl border border-white/10 bg-black/20 p-6">
-								<div className="mb-5 flex items-center gap-2">
-									<FileUp className="h-5 w-5 text-cyan-300" />
-									<h2 className="text-xl font-semibold">Upload document</h2>
+<motion.section variants={itemVariants} className="rounded-3xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-6">
+							<div className="mb-5 flex items-center gap-2">
+								<FileUp className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
+								<h2 className="text-xl font-semibold text-slate-900 dark:text-white">Upload document</h2>
 								</div>
 
 								<form onSubmit={handleUpload} className="space-y-4">
@@ -304,18 +304,18 @@ export default function KnowledgeBasePage() {
 										onDrop={handleFileDrop}
 										className={`flex cursor-pointer flex-col items-center justify-center rounded-3xl border border-dashed px-5 py-10 text-center transition ${
 											isDragging
-												? "border-cyan-400/60 bg-cyan-400/10"
-												: "border-white/15 bg-white/5 hover:border-cyan-400/40 hover:bg-white/10"
+											? "border-cyan-600/60 dark:border-cyan-400/60 bg-cyan-100 dark:bg-cyan-400/10"
+											: "border-slate-300 dark:border-white/15 bg-slate-200 dark:bg-white/5 hover:border-cyan-600/40 dark:hover:border-cyan-400/40 hover:bg-slate-300 dark:hover:bg-white/10"
 										}`}
 									>
-										<Upload className="h-10 w-10 text-cyan-300" />
-										<span className="mt-4 text-sm font-medium text-white">
+										<Upload className="h-10 w-10 text-cyan-600 dark:text-cyan-300" />
+										<span className="mt-4 text-sm font-medium text-slate-900 dark:text-white">
 											{selectedFile ? selectedFile.name : "Choose a file to upload"}
 										</span>
-										<span className="mt-2 text-xs font-medium text-cyan-200">
+										<span className="mt-2 text-xs font-medium text-cyan-600 dark:text-cyan-200">
 											{isDragging ? "Drop the file here to attach it" : "Drag and drop a file here, or click to browse"}
 										</span>
-										<span className="mt-2 text-xs leading-5 text-slate-500">
+										<span className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-500">
 											PDF, TXT, MD, DOCX, or PPTX. Max {MAX_FILE_SIZE_MB}MB.
 										</span>
 										<input
@@ -374,17 +374,17 @@ export default function KnowledgeBasePage() {
 								</form>
 							</motion.section>
 
-							<motion.section variants={itemVariants} className="rounded-3xl border border-white/10 bg-black/20 p-6">
-								<div className="mb-5 flex items-center justify-between gap-3">
-									<div className="flex items-center gap-2">
-										<FileText className="h-5 w-5 text-cyan-300" />
-										<h2 className="text-xl font-semibold">Stored documents</h2>
-									</div>
+									<motion.section variants={itemVariants} className="rounded-3xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 p-6">
+										<div className="mb-5 flex items-center justify-between gap-3">
+											<div className="flex items-center gap-2">
+												<FileText className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
+												<h2 className="text-xl font-semibold text-slate-900 dark:text-white">Stored documents</h2>
+											</div>
 
-									<button
-										type="button"
-										onClick={loadDocuments}
-										className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 transition hover:bg-white/10"
+											<button
+												type="button"
+												onClick={loadDocuments}
+												className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-200 dark:bg-white/5 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 transition hover:bg-slate-300 dark:hover:bg-white/10"
 									>
 										<RefreshCw className="h-4 w-4" />
 										Refresh

@@ -285,6 +285,9 @@ def update_me(
     if body.security_alerts_enabled is not None:
         current_user.security_alerts_enabled = body.security_alerts_enabled
 
+    if body.dark_mode is not None:
+        current_user.dark_mode = body.dark_mode
+
     if body.model is not None:
         current_user.model = body.model
 
