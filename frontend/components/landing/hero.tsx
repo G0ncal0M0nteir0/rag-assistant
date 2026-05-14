@@ -18,7 +18,7 @@ export default function Hero() {
             Get Started
           </Link>
 
-          <Link href="#features" className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition">
+          <Link href="/docs" className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition">
             Learn more
           </Link>
         </div>

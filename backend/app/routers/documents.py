@@ -70,23 +70,43 @@ def upload_document(
     current_user: models.User = Depends(get_current_user)
 ):
     allowed = ["pdf", "txt", "md", "docx", "pptx"]
-    ext = file.filename.lower().split(".")[-1]
+    # Sanitize filename to avoid path traversal and keep a safe original filename
+    raw_filename = file.filename or "uploaded"
+    safe_filename = os.path.basename(raw_filename)
+    # enforce a reasonable max filename length
+    if len(safe_filename) > 255:
+        safe_filename = safe_filename[-255:]
+
+    ext = safe_filename.lower().split(".")[-1]
     if ext not in allowed:
         raise HTTPException(
             status_code=400,
             detail="Only PDF, TXT, MD, DOCX and PPTX files are supported."
         )
 
-    contents = file.file.read()
-    if len(contents) > MAX_FILE_SIZE:
-        raise HTTPException(
-            status_code=400,
-            detail=f"File too large. Maximum size is {MAX_FILE_SIZE_MB}MB."
-        )
+    # Stream write to disk to avoid loading large files entirely into memory
+    file_id = str(uuid.uuid4())
+    file_path = os.path.join(UPLOAD_DIR, f"{file_id}_{safe_filename}")
+
+    total_written = 0
+    with open(file_path, "wb") as f:
+        while True:
+            chunk = file.file.read(1024 * 1024)
+            if not chunk:
+                break
+            total_written += len(chunk)
+            if total_written > MAX_FILE_SIZE:
+                f.close()
+                os.remove(file_path)
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"File too large. Maximum size is {MAX_FILE_SIZE_MB}MB."
+                )
+            f.write(chunk)
 
     existing = db.query(models.Document).filter(
         models.Document.user_id == current_user.id,
-        models.Document.filename == file.filename
+        models.Document.filename == safe_filename
     ).first()
     if existing:
         raise HTTPException(
@@ -94,14 +114,9 @@ def upload_document(
             detail="A document with this name already exists."
         )
 
-    file_id = str(uuid.uuid4())
-    file_path = os.path.join(UPLOAD_DIR, f"{file_id}_{file.filename}")
-
-    with open(file_path, "wb") as f:
-        f.write(contents)
 
     try:
-        text = extract_text(file_path, file.filename)
+        text = extract_text(file_path, safe_filename)
     except HTTPException:
         os.remove(file_path)
         raise
@@ -122,7 +137,7 @@ def upload_document(
     doc_record = models.Document(
         id=uuid.uuid4(),
         user_id=current_user.id,
-        filename=file.filename,
+        filename=safe_filename,
         file_path=file_path
     )
     db.add(doc_record)
