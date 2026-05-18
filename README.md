@@ -48,9 +48,30 @@ pip install -r requirements.txt
 Create a `.env` file:
 
 ```
+# Database
 DATABASE_URL=sqlite:///./test_db.sqlite3
-SECRET_KEY=your-secret-key-here
-GROQ_API_KEY=your-groq-api-key
+
+# JWT Auth
+SECRET_KEY=your-secret-key-here        # Generate with: openssl rand -hex 32
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+# Groq AI
+GROQ_API_KEY=your-groq-api-key         # From: console.groq.com
+
+# Mail (Gmail example)
+MAIL_USERNAME=your@gmail.com
+MAIL_PASSWORD=your-app-password        # Gmail App Password (not account password)
+MAIL_FROM=your@gmail.com
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+
+# URLs (local dev)
+FRONTEND_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:8000
+
+
+
 ```
 
 To run the backend:
